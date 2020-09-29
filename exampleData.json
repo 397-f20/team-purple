@@ -4,9 +4,9 @@
   "code": "1234",
   "prompt": "What movie are we watching?",
   "options": [
-    "The Phantom Menace",
-    "Attack of the Clones",
-    "Revenge of the Sith"
+    { "title": "The Phantom Menace", "info": "This is the phantom menace" },
+    { "title": "Attack of the Clones", "info": "Now attacking clones" },
+    { "title": "Revenge of the Sith", "info": "Lastly revenge" }
   ],
   "criteria": ["Acting", "Writing", "VFX", "Music", "Action"],
   "votes": [

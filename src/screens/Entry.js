@@ -11,7 +11,8 @@ import Form from "../components/Form";
 import exampleData from "../../exampleData.json";
 
 const sectionData = exampleData.options.map((option) => ({
-  title: option,
+  title: option.title,
+  info: option.info,
   data: ["scores"],
 }));
 
@@ -21,22 +22,25 @@ const Entry = ({ route }) => {
       <SectionList
         sections={sectionData}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ width: "100%" }}
         keyExtractor={(index) => `${index}`}
         renderItem={({ section: { data } }) => (
-          <Form
-            initialValues={{
-              id: null,
-              meets: null,
-              title: null,
-            }}
-          >
-            {exampleData.criteria.map((item) => (
-              <View key={item}>
-                <Text>{item}</Text>
-                <Form.Field name={item} placeholder={`Enter ${item}`} />
-              </View>
-            ))}
-          </Form>
+          <View style={styles.formContainer}>
+            <Form
+              initialValues={{
+                id: null,
+                meets: null,
+                title: null,
+              }}
+            >
+              {exampleData.criteria.map((item) => (
+                <View key={item}>
+                  <Text>{item}</Text>
+                  <Form.Field name={item} placeholder={`Enter ${item}`} />
+                </View>
+              ))}
+            </Form>
+          </View>
         )}
         renderSectionHeader={({ section: { title } }) => (
           <View style={styles.header}>
@@ -53,18 +57,18 @@ const Entry = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
   },
   field: {
     display: "flex",
     flexDirection: "row",
   },
+  formContainer: {
+    marginHorizontal: "10%",
+  },
   header: {
-    backgroundColor: "grey",
+    backgroundColor: "#81B2FD",
     padding: 10,
-    borderRadius: 10,
+    marginBottom: 20,
   },
 });
 
