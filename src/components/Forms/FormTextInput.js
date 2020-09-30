@@ -43,7 +43,6 @@ export default function FormTextInput({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.lightGrey,
-    borderRadius: 25,
     flexDirection: 'row',
     padding: 15,
     marginVertical: 10
@@ -54,7 +53,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     width: '100%',
-    fontSize: 18,
+    fontSize: 16,
     color: Colors.black
   },
   rightIconStyles: {
