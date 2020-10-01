@@ -7,6 +7,7 @@ import Home from "./src/screens/Home";
 import Entry from "./src/screens/Entry";
 import Confirmation from "./src/screens/Confirmation";
 import Description from "./src/screens/Description";
+import Results from "./src/screens/Results";
 
 const Stack = createStackNavigator();
 
@@ -19,6 +20,7 @@ export default function App() {
         {/* change name to option.name or state */}
         <Stack.Screen name="Description" component={Description} />
         <Stack.Screen name="Confirmation" component={Confirmation} />
+        <Stack.Screen name="Results" component={Results} />
       </Stack.Navigator>
     </NavigationContainer>
   );

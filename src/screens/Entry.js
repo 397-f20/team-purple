@@ -8,13 +8,12 @@ import {
   SectionList,
   Button,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import Form from "../components/Form";
 import exampleData from "../../exampleData.json";
 import { fonts, colors } from "../styles/all_styles";
 import { firebase } from "../../firebase";
-
-
 
 const fixSectionData = (json) =>
   json.options.map((option) => ({
@@ -25,12 +24,20 @@ const fixSectionData = (json) =>
 
 const Entry = ({ route, navigation }) => {
   const [sectionData, setSectionData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [criteria, setCriteria] = useState(null);
+
   useEffect(() => {
+    setIsLoading(true);
     const db = firebase.database().ref();
     db.on(
       "value",
       (snap) => {
-        if (snap.val()) setSectionData(fixSectionData(snap.val()));
+        if (snap.val()) {
+          setSectionData(fixSectionData(snap.val()));
+          setCriteria(snap.val().criteria);
+        }
+        setIsLoading(false);
       },
       (error) => console.log(error)
     );
@@ -38,9 +45,15 @@ const Entry = ({ route, navigation }) => {
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => <Button title="Submit" />,
+      headerRight: () => (
+        <Button
+          title="Submit"
+          onPress={() => navigation.navigate("Confirmation")}
+        />
+      ),
     });
   }, [navigation]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ padding: 10 }}>
@@ -49,42 +62,45 @@ const Entry = ({ route, navigation }) => {
           What Star Wars movie are we watching?
         </Text>
       </View>
-      <SectionList
-        sections={sectionData}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ width: "100%" }}
-        keyExtractor={(index) => `${index}`}
-        renderItem={({ section: { data } }) => (
-          <View style={styles.formContainer}>
-            <Form
-              initialValues={{
-                id: null,
-                meets: null,
-                title: null,
-              }}
-            >
-              {exampleData.criteria.map((item) => (
-                <View key={item} style={styles.field}>
-                  <Text style={fonts.p}>{item}</Text>
-                  <View style={styles.field__input}>
-                    <Form.Field name={item} placeholder={`${item}`} />
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <SectionList
+          sections={sectionData}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ width: "100%" }}
+          keyExtractor={(index) => `${index}`}
+          renderItem={({ section: { data } }) => (
+            <View style={styles.formContainer}>
+              <Form
+                initialValues={{
+                  id: "",
+                  userId: "",
+                }}
+              >
+                {criteria.map((item) => (
+                  <View key={item} style={styles.field}>
+                    <Text style={fonts.p}>{item}</Text>
+                    <View style={styles.field__input}>
+                      <Form.Field name={`${item}`} placeholder={`${item}`} />
+                    </View>
                   </View>
-                </View>
-              ))}
-            </Form>
-          </View>
-        )}
-        renderSectionHeader={({ section: { title } }) => (
-          <View style={styles.header}>
-            <Text style={fonts.h2}>{title}</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Description")}
-            >
-              <Text style={[fonts.h2, { fontWeight: "normal" }]}>more</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
+                ))}
+              </Form>
+            </View>
+          )}
+          renderSectionHeader={({ section: { title } }) => (
+            <View style={styles.header}>
+              <Text style={fonts.h2}>{title}</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Description")}
+              >
+                <Text style={[fonts.h2, { fontWeight: "normal" }]}>more</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+      )}
     </SafeAreaView>
   );
 };
