@@ -14,6 +14,7 @@ import Form from "../components/Form";
 import exampleData from "../../exampleData.json";
 import { fonts, colors } from "../styles/all_styles";
 import { firebase } from "../../firebase";
+import Header from '../components/01_Atoms/Header';
 
 const fixSectionData = (json) =>
   json.options.map((option) => ({
@@ -90,14 +91,7 @@ const Entry = ({ route, navigation }) => {
             </View>
           )}
           renderSectionHeader={({ section: { title } }) => (
-            <View style={styles.header}>
-              <Text style={fonts.h2}>{title}</Text>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("Description")}
-              >
-                <Text style={[fonts.h2, { fontWeight: "normal" }]}>more</Text>
-              </TouchableOpacity>
-            </View>
+            <Header navigation={navigation} title={title}/>
           )}
         />
       )}
