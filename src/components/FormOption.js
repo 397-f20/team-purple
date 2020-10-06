@@ -12,7 +12,8 @@ import {
 } from "react-native";
 import Form from "../components/Form";
 import { fonts, colors } from "../styles/all_styles";
-import { Slider } from "react-native-elements";
+import Stars from "react-native-stars";
+import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
 
 const FormOption = ({ criteria, values, setValues, option }) => {
   const setNewVal = (key, val) => {
@@ -32,12 +33,21 @@ const FormOption = ({ criteria, values, setValues, option }) => {
                 <Text style={styles.val}>{values[option][item]}</Text>
               </View>
               <View style={styles.field__input}>
-                <Slider
-                  value={values[option][item]}
-                  thumbTintColor={colors.primaryColor}
-                  step={1}
-                  maximumValue={5}
-                  onValueChange={(value) => setNewVal(item, value)}
+                <Stars
+                  default={values[option][item]}
+                  count={5}
+                  half={false}
+                  update={(value) => setNewVal(item, value)}
+                  fullStar={<Icon name={"star"} style={[styles.myStarStyle]} />}
+                  emptyStar={
+                    <Icon
+                      name={"star-outline"}
+                      style={[styles.myStarStyle, styles.myEmptyStarStyle]}
+                    />
+                  }
+                  halfStar={
+                    <Icon name={"star-half"} style={[styles.myStarStyle]} />
+                  }
                 />
               </View>
             </View>
@@ -61,6 +71,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   field__input: {
+    width: "100%",
+    marginVertical: 10,
     width: "60%",
   },
   formContainer: {
@@ -84,6 +96,13 @@ const styles = StyleSheet.create({
     marginRight: 22,
     justifyContent: "center",
     alignItems: "center",
+  },
+  myStarStyle: {
+    color: colors.primaryColor,
+    fontSize: 25,
+  },
+  myEmptyStarStyle: {
+    color: colors.primaryColor,
   },
 });
 
