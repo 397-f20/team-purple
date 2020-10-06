@@ -14,7 +14,8 @@ import Form from "../components/Form";
 import exampleData from "../../exampleData.json";
 import { fonts, colors } from "../styles/all_styles";
 import { firebase } from "../../firebase";
-import Header from '../components/01_Atoms/Header';
+import Header from "../components/01_Atoms/Header";
+import FormOption from "../components/FormOption";
 
 const fixSectionData = (json) =>
   json.options.map((option) => ({
@@ -26,7 +27,8 @@ const fixSectionData = (json) =>
 const Entry = ({ route, navigation }) => {
   const [sectionData, setSectionData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [criteria, setCriteria] = useState(null);
+  const [data, setData] = useState(null);
+  const [values, setValues] = useState(null);
 
   useEffect(() => {
     setIsLoading(true);
@@ -35,14 +37,29 @@ const Entry = ({ route, navigation }) => {
       "value",
       (snap) => {
         if (snap.val()) {
+          setData(snap.val());
           setSectionData(fixSectionData(snap.val()));
-          setCriteria(snap.val().criteria);
         }
         setIsLoading(false);
       },
       (error) => console.log(error)
     );
   }, []);
+
+  useEffect(() => {
+    if (data != null && values == null) {
+      const mappedCriteria = data.criteria.map(function (key) {
+        return [key, 0];
+      });
+      const valuesObj = Object.fromEntries(mappedCriteria);
+      const mappedOptions = data.options.map(function (key) {
+        return [key.title, { ...valuesObj }];
+      });
+      const optionsObj = Object.fromEntries(mappedOptions);
+      console.log(optionsObj);
+      setValues(optionsObj);
+    }
+  }, [data]);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -60,7 +77,7 @@ const Entry = ({ route, navigation }) => {
       <View style={{ padding: 10 }}>
         <Text style={fonts.h1}>Prompt</Text>
         <Text style={[fonts.h1, { fontWeight: "normal" }]}>
-          What Star Wars movie are we watching?
+          {data != null ? data.prompt : "isLoading..."}
         </Text>
       </View>
       {isLoading ? (
@@ -69,29 +86,18 @@ const Entry = ({ route, navigation }) => {
         <SectionList
           sections={sectionData}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ width: "100%" }}
+          contentContainerStyle={{ width: "100%", paddingBottom: 200 }}
           keyExtractor={(index) => `${index}`}
-          renderItem={({ section: { data } }) => (
-            <View style={styles.formContainer}>
-              <Form
-                initialValues={{
-                  id: "",
-                  userId: "",
-                }}
-              >
-                {criteria.map((item) => (
-                  <View key={item} style={styles.field}>
-                    <Text style={fonts.p}>{item}</Text>
-                    <View style={styles.field__input}>
-                      <Form.Field name={`${item}`} placeholder={`${item}`} />
-                    </View>
-                  </View>
-                ))}
-              </Form>
-            </View>
+          renderItem={({ section: { title } }) => (
+            <FormOption
+              criteria={data.criteria}
+              values={values}
+              setValues={setValues}
+              option={title}
+            />
           )}
           renderSectionHeader={({ section: { title } }) => (
-            <Header navigation={navigation} title={title}/>
+            <Header navigation={navigation} title={title} />
           )}
         />
       )}
@@ -101,7 +107,7 @@ const Entry = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    //flex: 1,
   },
   field: {
     display: "flex",
