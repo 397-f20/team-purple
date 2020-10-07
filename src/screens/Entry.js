@@ -13,7 +13,7 @@ import {
 import Form from "../components/Form";
 import exampleData from "../../exampleData.json";
 import { fonts, colors } from "../styles/all_styles";
-import { firebase } from "../../firebase";
+import { firebase } from "../../utils/firebase";
 import Header from "../components/01_Atoms/Header";
 import FormOption from "../components/FormOption";
 
