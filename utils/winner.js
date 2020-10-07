@@ -1,19 +1,22 @@
-function winner(pollData){
+function winner(pollData) {
   //pollData.votes[0].options[0].scores[criteria];
+
   let sum = {};
   let data = Object.assign({}, pollData);
-  for (let vote of data.votes) {
-    for (let choice of vote.options) {
-      if (!sum[choice.name]) {
-        sum[choice.name] = Object.assign({}, choice.scores);
-        const scores = Object.values(choice.scores);
-        sum[choice.name].total = scores.reduce((a, b) => {
+  let votes = Object.values(data.scores)
+  for (let vote of votes) {
+    for (const [choice, scores] of Object.entries(vote)) {
+
+      if (!sum[choice]) {
+        sum[choice] = Object.assign({}, scores);
+        const tally = Object.values(scores);
+        sum[choice].total = tally.reduce((a, b) => {
           return a + b;
         }, 0);
       } else {
         for (let criteria of data.criteria) {
-          sum[choice.name][criteria] += choice.scores[criteria]
-          sum[choice.name].total += choice.scores[criteria]
+          sum[choice][criteria] += scores[criteria]
+          sum[choice].total += scores[criteria]
         }
       }
     }
@@ -33,9 +36,12 @@ function winner(pollData){
   for (let criteria of data.criteria) {
     scores.push(sum[lead][criteria]);
   };
-  return {title: lead, scores};
+  return {
+    title: lead,
+    scores
+  };
 
-  
+
 };
 
 

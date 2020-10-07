@@ -62,7 +62,7 @@ const Entry = ({ route, navigation }) => {
       .catch((error) => {
         setSubmitError(error.message);
       });
-    navigation.navigate("Confirmation", { pollId });
+    navigation.navigate("Confirmation", { pollId, roomCode });
   };
 
   useEffect(() => {

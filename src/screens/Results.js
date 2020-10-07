@@ -19,11 +19,18 @@ const Results = ({ route, navigation }) => {
   const [pollData, setPollData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [win, setWin] = useState(null);
+  const pollId = route.params.pollId;
+
+  
 
   useEffect(() => {
     async function fetchData() {
       setIsLoading(true);
-      const db = firebase.database().ref();
+      const db = firebase
+      .database()
+      .ref("polls/" + pollId)
+
+
       await db.on(
         "value",
         (snap) => {

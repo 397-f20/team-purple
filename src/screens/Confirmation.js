@@ -14,7 +14,8 @@ import { fonts, colors } from "../styles/all_styles";
 const Confirmation = ({ route, navigation }) => {
   const [copiedText, setCopiedText] = useState("");
 
-  const roomCode = "xoxo23";
+  const roomCode = route.params.roomCode;
+  const pollId = route.params.pollId;
 
   const copyToClipboard = () => {
     Clipboard.setString(roomCode);
@@ -38,7 +39,7 @@ const Confirmation = ({ route, navigation }) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.endPoll}
-            onPress={() => navigation.navigate("Results")}
+            onPress={() => navigation.navigate("Results", { pollId })}
           >
             <Text style={[styles.endPollText, fonts.h2]}> End Poll </Text>
           </TouchableOpacity>
