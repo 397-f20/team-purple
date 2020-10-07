@@ -11,9 +11,9 @@ import {
 } from "react-native";
 import Form from "../components/Form";
 
-import { firebase } from '../../utils/firebase'
+import { firebase } from "../../utils/firebase";
 
-import randomWords from 'random-words'
+import randomWords from "random-words";
 
 // TODO: Use state to update form entries
 // FIXME: A text node cannot be a child of a <View>
@@ -23,15 +23,16 @@ const NewPoll = ({ navigation, route }) => {
   async function handleSubmit(values) {
     const { prompt, options, criteria } = values;
     const roomCode = randomWords();
-    console.log(roomCode)
+    console.log(roomCode);
     const newPoll = { prompt, options, criteria, roomCode };
-    firebase
+    await firebase
       .database()
       .ref("polls")
       .push(newPoll)
       .catch((error) => {
         setSubmitError(error.message);
       });
+    navigation.navigate("Entry", { roomCode });
   }
   return (
     <SafeAreaView>

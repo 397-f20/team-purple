@@ -28,18 +28,23 @@ const Entry = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
   const [values, setValues] = useState(null);
-
+  const [pollId, setPollId] = useState(null);
   const roomCode = route.params.roomCode;
 
   useEffect(() => {
     setIsLoading(true);
-    const db = firebase.database().ref('polls').orderByChild('roomCode').equalTo(roomCode);
+    const db = firebase
+      .database()
+      .ref("polls")
+      .orderByChild("roomCode")
+      .equalTo(roomCode);
 
     db.on(
       "value",
       (snap) => {
         if (snap.val()) {
           setData(Object.values(snap.val())[0]);
+          setPollId(Object.keys(snap.val())[0]);
           setSectionData(fixSectionData(Object.values(snap.val())[0]));
         }
         setIsLoading(false);
@@ -47,6 +52,18 @@ const Entry = ({ route, navigation }) => {
       (error) => console.log(error)
     );
   }, []);
+
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    await firebase
+      .database()
+      .ref("polls/" + pollId + "/scores")
+      .push(values)
+      .catch((error) => {
+        setSubmitError(error.message);
+      });
+    navigation.navigate("Confirmation", { pollId });
+  };
 
   useEffect(() => {
     if (data != null && values == null) {
@@ -63,21 +80,19 @@ const Entry = ({ route, navigation }) => {
     }
   }, [data]);
 
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <Button
-          title="Submit"
-          onPress={() => navigation.navigate("Confirmation")}
-        />
-      ),
-    });
-  }, [navigation]);
+  // React.useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerRight: (values) => (
+  //       <Button title="Submit" onPress={() => console.log(values)} />
+  //     ),
+  //   });
+  // }, [navigation]);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ padding: 10 }}>
-        <Text style={fonts.h1}>Prompt</Text>
+        <Text style={fonts.h1}>Prompt </Text>
+        <Text style={fonts.h1}>Share the room code: {roomCode}</Text>
         <Text style={[fonts.h1, { fontWeight: "normal" }]}>
           {data != null ? data.prompt : "isLoading..."}
         </Text>
@@ -103,6 +118,7 @@ const Entry = ({ route, navigation }) => {
           )}
         />
       )}
+      <Button title="Submit" onPress={() => handleSubmit()} />
     </SafeAreaView>
   );
 };
