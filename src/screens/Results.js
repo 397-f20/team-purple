@@ -18,6 +18,7 @@ import winner from "../../utils/winner";
 const Results = ({ route, navigation }) => {
   const [pollData, setPollData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [win, setWin] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -34,6 +35,10 @@ const Results = ({ route, navigation }) => {
     }
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (win == null && pollData != null) setWin(winner(pollData));
+  }, [pollData]);
 
   // CHART DATA-------------------------------------------------
   const chartConfig = {
@@ -54,7 +59,7 @@ const Results = ({ route, navigation }) => {
   
   const data = () => {
       
-    const win = winner(pollData);
+    
 
     return {
       labels: pollData.criteria,
@@ -70,7 +75,7 @@ const Results = ({ route, navigation }) => {
   return (
     
     <SafeAreaView style={styles.container}>
-      {pollData == null ? (
+      {win == null ? (
         <ActivityIndicator />
       ) : (
         <View style={styles.contentContainer}>
@@ -78,7 +83,7 @@ const Results = ({ route, navigation }) => {
           <Text style={fonts.p}>{pollData.prompt}</Text>
 
           <Text style={[fonts.h2]}>Winner</Text>
-          <Header navigation={navigation} title={winner(pollData).title} />
+          <Header navigation={navigation} title={win.title} />
           <BarChart
             style={{ marginLeft: -25 }}
             data={data()}
