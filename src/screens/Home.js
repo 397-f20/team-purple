@@ -11,24 +11,27 @@ import {fonts} from '../styles/all_styles';
 
 
 const Home = ({ route, navigation }) => {
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-            headerRight: () => (
-                <Button title="New Poll" />
-            ),
-        });
-    }, [navigation]);
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          title="New Poll"
+          onPress={() => navigation.navigate("NewPoll")}
+        />
+      ),
+    });
+  }, [navigation]);
 
-    const [value, onChangeText] = React.useState('');
+  const [roomCode, setRoomCode] = React.useState("");
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={[fonts.h1, {marginBottom: 15}]}>Room Code:</Text>
-            <TextInput
-                style={styles.input}
-                onSubmitEditing={()=>navigation.navigate("Entry")}
-                onChangeText={text => onChangeText(text)}
-                value={value}
-            />
+            <Text style={[fonts.h1, { marginBottom: 15 }]}>Room Code:</Text>
+      <TextInput
+        style={styles.input}
+        onSubmitEditing={() => navigation.navigate("Entry", { roomCode })}
+        onChangeText={(text) => setRoomCode(text)}
+        value={roomCode}
+      />
         </SafeAreaView>
     );
 };
