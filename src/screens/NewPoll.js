@@ -11,6 +11,10 @@ import {
 } from "react-native";
 import Form from "../components/Form";
 
+import { firebase } from '../../utils/firebase'
+
+import randomWords from 'random-words'
+
 // TODO: Use state to update form entries
 // FIXME: A text node cannot be a child of a <View>
 const NewPoll = ({ navigation, route }) => {
@@ -18,7 +22,9 @@ const NewPoll = ({ navigation, route }) => {
 
   async function handleSubmit(values) {
     const { prompt, options, criteria } = values;
-    const newPoll = { prompt, options, criteria };
+    const roomCode = randomWords();
+    console.log(roomCode)
+    const newPoll = { prompt, options, criteria, roomCode };
     firebase
       .database()
       .ref("polls")
@@ -36,7 +42,7 @@ const NewPoll = ({ navigation, route }) => {
             options: ["movie 1", "movie 2"],
             criteria: ["writing", "vfx", "acting"],
           }}
-          onSubmit={(values) => console.log(values)}
+          onSubmit={(values) => handleSubmit(values)}
         >
           <Text>Prompt</Text>
           <Form.Field

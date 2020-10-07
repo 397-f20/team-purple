@@ -19,8 +19,7 @@ import FormOption from "../components/FormOption";
 
 const fixSectionData = (json) =>
   json.options.map((option) => ({
-    title: option.title,
-    info: option.info,
+    title: option,
     data: ["scores"],
   }));
 
@@ -30,15 +29,18 @@ const Entry = ({ route, navigation }) => {
   const [data, setData] = useState(null);
   const [values, setValues] = useState(null);
 
+  const roomCode = route.params.roomCode;
+
   useEffect(() => {
     setIsLoading(true);
-    const db = firebase.database().ref();
+    const db = firebase.database().ref('polls').orderByChild('roomCode').equalTo(roomCode);
+
     db.on(
       "value",
       (snap) => {
         if (snap.val()) {
-          setData(snap.val());
-          setSectionData(fixSectionData(snap.val()));
+          setData(Object.values(snap.val())[0]);
+          setSectionData(fixSectionData(Object.values(snap.val())[0]));
         }
         setIsLoading(false);
       },
@@ -53,7 +55,7 @@ const Entry = ({ route, navigation }) => {
       });
       const valuesObj = Object.fromEntries(mappedCriteria);
       const mappedOptions = data.options.map(function (key) {
-        return [key.title, { ...valuesObj }];
+        return [key, { ...valuesObj }];
       });
       const optionsObj = Object.fromEntries(mappedOptions);
       console.log(optionsObj);

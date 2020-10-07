@@ -1,0 +1,86 @@
+{
+  "_id": "1",
+  "ownerId": "11",
+  "code": "1234",
+  "prompt": "What movie are we watching?",
+  "options": [
+    { "title": "The Phantom Menace", "info": "This is the phantom menace" },
+    { "title": "Attack of the Clones", "info": "Now attacking clones" },
+    { "title": "Revenge of the Sith", "info": "Lastly revenge" }
+  ],
+  "criteria": ["Acting", "Writing", "VFX", "Music", "Action"],
+  "votes": [
+    {
+      "_id": "a",
+      "userId": "11",
+      "options": [
+        {
+          "name": "The Phantom Menace",
+          "scores": {
+            "Acting": 2,
+            "Writing": 3,
+            "VFX": 5,
+            "Music": 6,
+            "Action": 6
+          }
+        },
+        {
+          "name": "Attack of the Clones",
+          "scores": {
+            "Acting": 5,
+            "Writing": 8,
+            "VFX": 1,
+            "Music": 9,
+            "Action": 3
+          }
+        },
+        {
+          "name": "Revenge of the Sith",
+          "scores": {
+            "Acting": 2,
+            "Writing": 3,
+            "VFX": 5,
+            "Music": 6,
+            "Action": 6
+          }
+        }
+      ]
+    },
+    {
+      "_id": "a",
+      "userId": "12",
+      "options": [
+        {
+          "name": "The Phantom Menace",
+          "scores": {
+            "Acting": 3,
+            "Writing": 6,
+            "VFX": 8,
+            "Music": 1,
+            "Action": 3
+          }
+        },
+        {
+          "name": "Attack of the Clones",
+          "scores": {
+            "Acting": 4,
+            "Writing": 5,
+            "VFX": 6,
+            "Music": 7,
+            "Action": 2
+          }
+        },
+        {
+          "name": "Revenge of the Sith",
+          "scores": {
+            "Acting": 2,
+            "Writing": 3,
+            "VFX": 5,
+            "Music": 9,
+            "Action": 9
+          }
+        }
+      ]
+    }
+  ]
+}
