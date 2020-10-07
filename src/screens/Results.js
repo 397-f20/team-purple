@@ -55,8 +55,6 @@ const Results = ({ route, navigation }) => {
   const data = () => {
       
     const win = winner(pollData);
-    console.log(pollData);
-    console.log(win);
 
     return {
       labels: pollData.criteria,
@@ -67,6 +65,7 @@ const Results = ({ route, navigation }) => {
       ],
     };
   };
+
 
   return (
     
