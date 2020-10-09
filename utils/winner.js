@@ -1,4 +1,4 @@
-function winner(pollData) {
+const winner = (pollData) => {
   //pollData.votes[0].options[0].scores[criteria];
 
   let sum = {};
@@ -20,7 +20,7 @@ function winner(pollData) {
         }
       }
     }
-  }
+  };
 
   //**Does not account for ties**
   let lead = '';
@@ -32,17 +32,40 @@ function winner(pollData) {
     }
   };
 
-  let scores = [];
-  for (let criteria of data.criteria) {
-    scores.push(sum[lead][criteria]);
-  };
-  return {
-    title: lead,
-    scores
-  };
+  let res = [getResults(lead, sum, data.criteria)]
+
+  for (let option of data.options) {
+    if (option != lead) {
+      res.push(getResults(option, sum, data.criteria))
+    }
+  }
+
+  return res;
+
 
 
 };
+
+
+
+const getResults = (option, sum, criteria) => {
+  let scores = [];
+  for (let crit of criteria) {
+    scores.push(sum[option][crit]);
+  };
+
+
+  return {
+    title: option,
+    barData: {
+      labels: criteria,
+      datasets: [{
+        data: scores,
+      }, ],
+    }
+  };
+}
+
 
 
 export default winner;

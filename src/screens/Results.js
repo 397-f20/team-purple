@@ -54,33 +54,8 @@ const Results = ({ route, navigation }) => {
     fillShadowGradientOpacity: 1,
   };
 
-  const data = () => {
-    return [{
-      labels: pollData.criteria,
-      datasets: [
-        {
-          data: win.scores,
-        },
-      ],
-    },
-    {
-      labels: pollData.criteria,
-      datasets: [
-        {
-          data: win.scores,
-        },
-      ],
-    },
-    {
-      labels: pollData.criteria,
-      datasets: [
-        {
-          data: win.scores,
-        },
-      ],
-    }]
-  };
 
+  
   return (
     <SafeAreaView style={styles.container}>
       {win == null ? (
@@ -91,10 +66,10 @@ const Results = ({ route, navigation }) => {
             <Text style={fonts.p}>{pollData.prompt}</Text>
 
             <Text style={[fonts.h2]}>Winner</Text>
-            <Header navigation={navigation} title={win.title} />
+            <Header navigation={navigation} title={win[0].title} />
             <BarChart
               style={{ marginLeft: -25 }}
-              data={data()[0]}
+              data={win[0].barData}
               width={300}
               height={220}
               chartConfig={chartConfig}
@@ -105,12 +80,12 @@ const Results = ({ route, navigation }) => {
 
           <Text style={[fonts.h2]}>Other Results</Text>
             { 
-              data().slice(1).map((option) => (
+              win.slice(1).map((option) => (
               <View>
-                <Header navigation={navigation} title={win.title} />
+                <Header navigation={navigation} title={option.title} />
                 <BarChart
                   style={{ marginLeft: -25 }}
-                  data={option}
+                  data={option.barData}
                   width={300}
                   height={220}
                   chartConfig={chartConfig}
