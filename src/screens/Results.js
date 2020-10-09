@@ -55,14 +55,30 @@ const Results = ({ route, navigation }) => {
   };
 
   const data = () => {
-    return {
+    return [{
       labels: pollData.criteria,
       datasets: [
         {
           data: win.scores,
         },
       ],
-    };
+    },
+    {
+      labels: pollData.criteria,
+      datasets: [
+        {
+          data: win.scores,
+        },
+      ],
+    },
+    {
+      labels: pollData.criteria,
+      datasets: [
+        {
+          data: win.scores,
+        },
+      ],
+    }]
   };
 
   return (
@@ -70,24 +86,43 @@ const Results = ({ route, navigation }) => {
       {win == null ? (
         <ActivityIndicator />
       ) : (
-        <View style={styles.contentContainer}>
-          <Text style={[fonts.h2]}>Prompt</Text>
-          <Text style={fonts.p}>{pollData.prompt}</Text>
+          <View style={styles.contentContainer}>
+            <Text style={[fonts.h2]}>Prompt</Text>
+            <Text style={fonts.p}>{pollData.prompt}</Text>
 
-          <Text style={[fonts.h2]}>Winner</Text>
-          <Header navigation={navigation} title={win.title} />
-          <BarChart
-            style={{ marginLeft: -25 }}
-            data={data()}
-            width={300}
-            height={220}
-            chartConfig={chartConfig}
-            withInnerLines={false}
-            showValuesOnTopOfBars
-            withHorizontalLabels={false}
-          />
-        </View>
-      )}
+            <Text style={[fonts.h2]}>Winner</Text>
+            <Header navigation={navigation} title={win.title} />
+            <BarChart
+              style={{ marginLeft: -25 }}
+              data={data()[0]}
+              width={300}
+              height={220}
+              chartConfig={chartConfig}
+              withInnerLines={false}
+              showValuesOnTopOfBars
+              withHorizontalLabels={false}
+            />
+
+          <Text style={[fonts.h2]}>Other Results</Text>
+            { 
+              data().slice(1).map((option) => (
+              <View>
+                <Header navigation={navigation} title={win.title} />
+                <BarChart
+                  style={{ marginLeft: -25 }}
+                  data={option}
+                  width={300}
+                  height={220}
+                  chartConfig={chartConfig}
+                  withInnerLines={false}
+                  showValuesOnTopOfBars
+                  withHorizontalLabels={false}
+                />
+              </View>
+
+            ))}
+          </View>
+        )}
     </SafeAreaView>
   );
 };
