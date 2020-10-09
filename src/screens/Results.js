@@ -21,26 +21,20 @@ const Results = ({ route, navigation }) => {
   const [win, setWin] = useState(null);
   const pollId = route.params.pollId;
 
-  
-
   useEffect(() => {
-    async function fetchData() {
-      setIsLoading(true);
-      const db = firebase
-      .database()
-      .ref("polls/" + pollId)
+    setIsLoading(true);
+    const db = firebase.database().ref("polls/" + pollId);
 
+    const handleData = (snap) => {
+      if (snap.val()) setPollData(snap.val());
+      setIsLoading(false);
+    };
 
-      await db.on(
-        "value",
-        (snap) => {
-          if (snap.val()) setPollData(snap.val());
-          setIsLoading(false);
-        },
-        (error) => console.log(error)
-      );
-    }
-    fetchData();
+    db.on("value", handleData, (error) => console.log(error));
+
+    return () => {
+      db.off("value", handleData);
+    };
   }, []);
 
   useEffect(() => {
@@ -60,14 +54,7 @@ const Results = ({ route, navigation }) => {
     fillShadowGradientOpacity: 1,
   };
 
-  
-
-  
-  
   const data = () => {
-      
-    
-
     return {
       labels: pollData.criteria,
       datasets: [
@@ -78,9 +65,7 @@ const Results = ({ route, navigation }) => {
     };
   };
 
-
   return (
-    
     <SafeAreaView style={styles.container}>
       {win == null ? (
         <ActivityIndicator />

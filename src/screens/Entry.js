@@ -23,9 +23,6 @@ const fixSectionData = (json) =>
     data: ["scores"],
   }));
 
-
-
-
 const Entry = ({ route, navigation }) => {
   const [sectionData, setSectionData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,18 +39,19 @@ const Entry = ({ route, navigation }) => {
       .orderByChild("roomCode")
       .equalTo(roomCode);
 
-    db.on(
-      "value",
-      (snap) => {
-        if (snap.val()) {
-          setData(Object.values(snap.val())[0]);
-          setPollId(Object.keys(snap.val())[0]);
-          setSectionData(fixSectionData(Object.values(snap.val())[0]));
-        }
-        setIsLoading(false);
-      },
-      (error) => console.log(error)
-    );
+    const handleData = (snap) => {
+      if (snap.val()) {
+        setData(Object.values(snap.val())[0]);
+        setPollId(Object.keys(snap.val())[0]);
+        setSectionData(fixSectionData(Object.values(snap.val())[0]));
+      }
+      setIsLoading(false);
+    };
+
+    db.on("value", handleData, (error) => console.log(error));
+    return () => {
+      db.off("value", handleData);
+    };
   }, []);
 
   const handleSubmit = async () => {
@@ -66,24 +64,24 @@ const Entry = ({ route, navigation }) => {
         setSubmitError(error.message);
       });
 
-      var count;
-      const pollRef = firebase
-      .database()
-      .ref("polls/" + pollId);
-      
-      pollRef.child("count").once('value', (snap) => {
-        count = snap.val();
-      }).catch((error) => {
-        setSubmitError(error.message);
-      });
+    var count;
+    const pollRef = firebase.database().ref("polls/" + pollId);
 
-      count++
-      await pollRef.update({"count": count})
+    pollRef
+      .child("count")
+      .once("value", (snap) => {
+        count = snap.val();
+      })
       .catch((error) => {
         setSubmitError(error.message);
       });
 
-    navigation.navigate("Confirmation", { pollId, roomCode, count});
+    count++;
+    await pollRef.update({ count: count }).catch((error) => {
+      setSubmitError(error.message);
+    });
+
+    navigation.navigate("Confirmation", { pollId, roomCode, count });
   };
 
   useEffect(() => {

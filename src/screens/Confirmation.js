@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   Clipboard,
   StyleSheet,
@@ -10,18 +10,36 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { fonts, colors } from "../styles/all_styles";
+import { firebase } from "../../utils/firebase";
 
 const Confirmation = ({ route, navigation }) => {
   const [copiedText, setCopiedText] = useState("");
+  const [count, setCount] = useState(route.params.count);
 
   const roomCode = route.params.roomCode;
   const pollId = route.params.pollId;
-  const count = route.params.count
 
   const copyToClipboard = () => {
     Clipboard.setString(roomCode);
   };
-  //use state?
+
+  useEffect(() => {
+    const db = firebase
+      .database()
+      .ref("polls/" + pollId)
+      .child("count");
+
+    const handleData = (snap) => {
+      if (snap.val()) {
+        setCount(snap.val());
+      }
+    };
+
+    db.on("value", handleData, (error) => console.log(error));
+    return () => {
+      db.off("value", handleData);
+    };
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
