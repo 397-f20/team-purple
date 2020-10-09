@@ -23,6 +23,9 @@ const fixSectionData = (json) =>
     data: ["scores"],
   }));
 
+
+
+
 const Entry = ({ route, navigation }) => {
   const [sectionData, setSectionData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -62,7 +65,25 @@ const Entry = ({ route, navigation }) => {
       .catch((error) => {
         setSubmitError(error.message);
       });
-    navigation.navigate("Confirmation", { pollId, roomCode });
+
+      var count;
+      const pollRef = firebase
+      .database()
+      .ref("polls/" + pollId);
+      
+      pollRef.child("count").once('value', (snap) => {
+        count = snap.val();
+      }).catch((error) => {
+        setSubmitError(error.message);
+      });
+
+      count++
+      await pollRef.update({"count": count})
+      .catch((error) => {
+        setSubmitError(error.message);
+      });
+
+    navigation.navigate("Confirmation", { pollId, roomCode, count});
   };
 
   useEffect(() => {

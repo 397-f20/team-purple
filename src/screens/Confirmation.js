@@ -16,6 +16,7 @@ const Confirmation = ({ route, navigation }) => {
 
   const roomCode = route.params.roomCode;
   const pollId = route.params.pollId;
+  const count = route.params.count
 
   const copyToClipboard = () => {
     Clipboard.setString(roomCode);
@@ -44,6 +45,7 @@ const Confirmation = ({ route, navigation }) => {
             <Text style={[styles.endPollText, fonts.h2]}> End Poll </Text>
           </TouchableOpacity>
         </View>
+        <Text style={styles.voteCount}> {count} </Text>
       </View>
     </SafeAreaView>
   );
@@ -65,6 +67,7 @@ const styles = StyleSheet.create({
   buttons: {
     flex: 1,
     flexDirection: "row",
+    marginBottom: 15,
   },
   container: {
     //this creates issues on mobile
@@ -96,6 +99,10 @@ const styles = StyleSheet.create({
     ...buttonBase,
     backgroundColor: "#bababa",
     color: "white",
+  },
+  voteCount: {
+    ...buttonBase,
+    backgroundColor: "green",
   },
   wrapper: {
     padding: 20,

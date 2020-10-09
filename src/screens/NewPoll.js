@@ -24,7 +24,7 @@ const NewPoll = ({ navigation, route }) => {
     const { prompt, options, criteria } = values;
     const roomCode = randomWords();
     console.log(roomCode);
-    const newPoll = { prompt, options, criteria, roomCode };
+    const newPoll = { prompt, options, criteria, roomCode, count: 0 };
     await firebase
       .database()
       .ref("polls")
