@@ -63,6 +63,7 @@ const Confirmation = ({ route, navigation }) => {
             <Text style={[styles.endPollText, fonts.h2]}> End Poll </Text>
           </TouchableOpacity>
         </View>
+        <Text style={styles.message}> Vote Count: </Text>
         <Text style={styles.voteCount}> {count} </Text>
       </View>
     </SafeAreaView>
