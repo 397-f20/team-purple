@@ -15,10 +15,28 @@ import { firebase } from "../../utils/firebase";
 
 import randomWords from "random-words";
 
-// TODO: Use state to update form entries
 // FIXME: A text node cannot be a child of a <View>
 const NewPoll = ({ navigation, route }) => {
   const [submitError, setSubmitError] = useState("");
+  const [prompt, setPrompt] = useState("Which movie are we watching?");
+  const [options, setOptions] = useState(["movie 1", "movie 2"]);
+  const [criteria, setCriteria] = useState(["writing", "vfx", "acting"]);
+
+  const addOption = () => {
+    setOptions([...options, ""]);
+  };
+
+  const addCriteria = () => {
+    setCriteria([...criteria, ""]);
+  };
+
+  const removeOption = () => {
+    setOptions(options.slice(0, options.length - 1));
+  };
+
+  const removeCriteria = () => {
+    setOptions(criteria.slice(0, criteria.length - 1));
+  };
 
   async function handleSubmit(values) {
     const { prompt, options, criteria } = values;
@@ -34,14 +52,17 @@ const NewPoll = ({ navigation, route }) => {
       });
     navigation.navigate("Entry", { roomCode });
   }
+
+  //if (options == null || criteria == null || !prompt) return;
+
   return (
     <SafeAreaView>
       <ScrollView>
         <Form
           initialValues={{
-            prompt: "Which movie are we watching?",
-            options: ["movie 1", "movie 2"],
-            criteria: ["writing", "vfx", "acting"],
+            prompt: prompt,
+            options: options,
+            criteria: criteria,
           }}
           onSubmit={(values) => handleSubmit(values)}
         >
@@ -54,7 +75,7 @@ const NewPoll = ({ navigation, route }) => {
             autoFocus={true}
           />
           <Text>Options</Text>
-          {["movie 1", "movie 2"].map((op, index) => (
+          {options.map((op, index) => (
             <Form.Field
               name={`options.${index}`}
               leftIcon="calendar-range"
@@ -62,8 +83,14 @@ const NewPoll = ({ navigation, route }) => {
               autoCapitalize="none"
             />
           ))}
+          {options.length < 5 && (
+            <Button onPress={() => addOption()}>Add option</Button>
+          )}
+          {options.length > 1 && (
+            <Button onPress={() => removeOption()}>Remove option</Button>
+          )}
           <Text>Criteria</Text>
-          {["writing", "vfx", "acting"].map((crit, index) => (
+          {criteria.map((crit, index) => (
             <Form.Field
               name={`criteria.${index}`}
               leftIcon="calendar-range"
@@ -71,6 +98,12 @@ const NewPoll = ({ navigation, route }) => {
               autoCapitalize="none"
             />
           ))}
+          {criteria.length < 5 && (
+            <Button onPress={() => addCriteria()}>Add criteria</Button>
+          )}
+          {criteria.length > 1 && (
+            <Button onPress={() => removeCriteria()}>Remove criteria</Button>
+          )}
           <Form.Button title={"Create"} />
           {/* {<Form.ErrorMessage error={submitError} visible={true} />} */}
         </Form>
