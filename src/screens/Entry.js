@@ -137,7 +137,7 @@ const Entry = ({ route, navigation }) => {
           )}
         />
       )}
-      <Button title="Submit" onPress={() => handleSubmit()} />
+      {!isLoading && <Button title="Submit" onPress={() => handleSubmit()} />}
     </SafeAreaView>
   );
 };
