@@ -15,7 +15,7 @@ const Header = ({ route, navigation, title }) => {
         <TouchableOpacity
           onPress={() => navigation.navigate("Description")}
         >
-          <Text style={[fonts.h2, { fontWeight: "normal" }]}>more</Text>
+          {/* <Text style={[fonts.h2, { fontWeight: "normal" }]}>more</Text> */}
         </TouchableOpacity>
       </View>
     );
