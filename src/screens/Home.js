@@ -26,12 +26,12 @@ const Home = ({ route, navigation }) => {
     return (
         <SafeAreaView style={styles.container}>
             <Text style={[fonts.h1, { marginBottom: 15 }]}>Room Code:</Text>
-      <TextInput
-        style={styles.input}
-        onSubmitEditing={() => navigation.navigate("Entry", { roomCode })}
-        onChangeText={(text) => setRoomCode(text)}
-        value={roomCode}
-      />
+            <TextInput
+              style={styles.input}
+              onSubmitEditing={() => navigation.navigate("Entry", { roomCode })}
+              onChangeText={(text) => setRoomCode(text)}
+              value={roomCode}
+            />
         </SafeAreaView>
     );
 };

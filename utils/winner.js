@@ -1,5 +1,5 @@
 const winner = (pollData) => {
-  
+
   //creates an object that maps options to their scores along with a total value
   let sum = {};
   let lead = '';
@@ -22,9 +22,7 @@ const winner = (pollData) => {
           max = (sum[choice].Total);
           lead = choice;
         }
-        
-
-      } 
+      }
       //else aggregate
       else {
         for (let criteria of data.criteria) {
@@ -33,7 +31,7 @@ const winner = (pollData) => {
         }
 
         //check if we have a new winner
-        if ((sum[choice].Total) > max){
+        if ((sum[choice].Total) > max) {
           max = (sum[choice].Total);
           lead = choice;
         }
@@ -41,20 +39,13 @@ const winner = (pollData) => {
     }
   };
 
-  //push the winner to the top of the lisr
-  let res = [getResults(lead, sum, data.criteria)]
-
-  //push everything else
-  for (let option of data.options) {
-    if (option != lead) {
-      res.push(getResults(option, sum, data.criteria))
-    }
-  }
+  //calls getResult with each option, then sort the list
+  let res = data.options.map((option) => getResults(option, sum, data.criteria))
+  res.sort((a, b) => (a.barData.datasets[0].data.Total > b.barData.datasets[0].data.Total) ? 1 : -1)
+  
   return res;
 
 };
-
-
 
 const getResults = (option, sum, criteria) => {
   let scores = [];
@@ -64,7 +55,6 @@ const getResults = (option, sum, criteria) => {
 
   //might be a more efficient way to do this but this adds the total to the results graph
   scores.push(sum[option].Total)
-
 
   return {
     title: option,
@@ -76,7 +66,5 @@ const getResults = (option, sum, criteria) => {
     }
   };
 }
-
-
 
 export default winner;
