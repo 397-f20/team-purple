@@ -8,21 +8,20 @@ import Entry from "./src/screens/Entry";
 import Confirmation from "./src/screens/Confirmation";
 import Description from "./src/screens/Description";
 import Results from "./src/screens/Results";
-import NewPoll from "./src/screens/NewPoll"
+import NewPoll from "./src/screens/NewPoll";
 
-const Stack = createStackNavigator();
+//const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-      
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen
-            name="NewPoll"
-            component={NewPoll}
-            options={{ title: "New Poll" }}
-          />
+          name="NewPoll"
+          component={NewPoll}
+          options={{ title: "New Poll" }}
+        />
         <Stack.Screen name="Entry" component={Entry} />
         {/* change name to option.name or state */}
         <Stack.Screen name="Description" component={Description} />
