@@ -5,8 +5,9 @@ cache:
   directories:
     - node_modules
 script:
-  - yarn test --silent
-  - yarn run builds
+  - yarn install --global expo-cli
+  - yarn ci
+  - yarn run predeploy
 after_success:
   - npm install -g firebase-tools
   - firebase deploy --token $FIREBASE_TOKEN --non-interactive
