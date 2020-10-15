@@ -10,7 +10,7 @@ import Description from "./src/screens/Description";
 import Results from "./src/screens/Results";
 import NewPoll from "./src/screens/NewPoll";
 
-//const Stack = createStackNavigator();
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
@@ -34,7 +34,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
