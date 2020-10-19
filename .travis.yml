@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - "stable"
+cache:
+  directories:
+    - node_modules
+script:
+  - yarn add expo-cli --save-dev
+  - yarn run predeploy
+after_success:
+  - npm install -g firebase-tools
+  - firebase deploy --token $FIREBASE_TOKEN --non-interactive
