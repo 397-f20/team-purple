@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { fonts, colors } from "../styles/all_styles";
 import { firebase } from "../../utils/firebase";
-import Header from "../components/01_Atoms/Header";
+import ResultGraph from "../components/02_Molecules/ResultGraph";
 import { BarChart, StackedBarChart } from "react-native-chart-kit";
 import winner from "../../utils/winner";
 
@@ -54,50 +54,26 @@ const Results = ({ route, navigation }) => {
     fillShadowGradientOpacity: 1,
   };
 
-
-  
   return (
     <SafeAreaView style={styles.container}>
       {win == null ? (
         <ActivityIndicator />
       ) : (
-          <View style={styles.contentContainer}>
-            <Text style={[fonts.h2]}>Prompt</Text>
-            <Text style={fonts.p}>{pollData.prompt}</Text>
+        <View style={styles.contentContainer}>
 
-            <Text style={[fonts.h2]}>Winner</Text>
-            <Header navigation={navigation} title={win[0].title} />
-            <BarChart
-              style={{ marginLeft: -25 }}
-              data={win[0].barData}
-              width={300}
-              height={220}
-              chartConfig={chartConfig}
-              withInnerLines={false}
-              showValuesOnTopOfBars
-              withHorizontalLabels={false}
-            />
+          {/* Let me know if you think this should go in a ResultHeader component  */}
+          <Text style={[fonts.h2]}>Prompt</Text>
+          <Text style={fonts.p}>{pollData.prompt}</Text>
+
+          <Text style={[fonts.h2]}>Winner</Text>
+          <ResultGraph title={win[0].title} data={win[0].barData} />
 
           <Text style={[fonts.h2]}>Other Results</Text>
-            { 
-              win.slice(1).map((option) => (
-              <View>
-                <Header navigation={navigation} title={option.title} />
-                <BarChart
-                  style={{ marginLeft: -25 }}
-                  data={option.barData}
-                  width={300}
-                  height={220}
-                  chartConfig={chartConfig}
-                  withInnerLines={false}
-                  showValuesOnTopOfBars
-                  withHorizontalLabels={false}
-                />
-              </View>
-
-            ))}
-          </View>
-        )}
+          {win.slice(1).map((option) => (
+            <ResultGraph title={option.title} data={option.barData} />
+          ))}
+        </View>
+      )}
     </SafeAreaView>
   );
 };

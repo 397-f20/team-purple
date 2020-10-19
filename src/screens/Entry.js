@@ -133,7 +133,7 @@ const Entry = ({ route, navigation }) => {
             />
           )}
           renderSectionHeader={({ section: { title } }) => (
-            <Header navigation={navigation} title={title} />
+            <Header title={title} />
           )}
         />
       )}

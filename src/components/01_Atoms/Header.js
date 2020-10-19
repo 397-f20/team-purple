@@ -7,17 +7,12 @@ import {
 } from "react-native";
 import {fonts, colors} from '../../styles/all_styles';
 
-const Header = ({ route, navigation, title }) => {
+const Header = ({title }) => {
 
     return (
         <View style={styles.header}>
-        <Text style={fonts.h2}>{title}</Text>
-        {/* <TouchableOpacity
-          onPress={() => navigation.navigate("Description")}
-        >
-          <Text style={[fonts.h2, { fontWeight: "normal" }]}>more</Text>
-        </TouchableOpacity> */}
-      </View>
+          <Text style={fonts.h2}>{title}</Text>
+        </View>
     );
 };
 
