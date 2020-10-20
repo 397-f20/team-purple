@@ -1,52 +1,51 @@
 const winner = (pollData) => {
-  //pollData.votes[0].options[0].scores[criteria];
 
+  //creates an object that maps options to their scores along with a total value
   let sum = {};
+  let lead = '';
+  let max = 0;
   let data = Object.assign({}, pollData);
   let votes = Object.values(data.scores)
+  //for each choices of each user's vote (based on db scheme)
   for (let vote of votes) {
     for (const [choice, scores] of Object.entries(vote)) {
-
+      //first time accessing option? set it to that vote and create a total value
       if (!sum[choice]) {
         sum[choice] = Object.assign({}, scores);
         const tally = Object.values(scores);
-        sum[choice].total = tally.reduce((a, b) => {
+        sum[choice].Total = tally.reduce((a, b) => {
           return a + b;
         }, 0);
-      } else {
+
+        //check if we have a new winner
+        if ((sum[choice].Total) > max) {
+          max = (sum[choice].Total);
+          lead = choice;
+        }
+      }
+      //else aggregate
+      else {
         for (let criteria of data.criteria) {
           sum[choice][criteria] += scores[criteria]
-          sum[choice].total += scores[criteria]
+          sum[choice].Total += scores[criteria]
+        }
+
+        //check if we have a new winner
+        if ((sum[choice].Total) > max) {
+          max = (sum[choice].Total);
+          lead = choice;
         }
       }
     }
   };
 
-  //**Does not account for ties**
-  let lead = '';
-  let max = 0;
-  for (const [key, value] of Object.entries(sum)) {
-    if (value.total > max) {
-      max = value.total;
-      lead = key;
-    }
-  };
-
-  let res = [getResults(lead, sum, data.criteria)]
-
-  for (let option of data.options) {
-    if (option != lead) {
-      res.push(getResults(option, sum, data.criteria))
-    }
-  }
-
+  //calls getResult with each option, then sort the list
+  let res = data.options.map((option) => getResults(option, sum, data.criteria))
+  res.sort((a, b) => (a.barData.datasets[0].data.Total > b.barData.datasets[0].data.Total) ? 1 : -1)
+  
   return res;
 
-
-
 };
-
-
 
 const getResults = (option, sum, criteria) => {
   let scores = [];
@@ -54,18 +53,18 @@ const getResults = (option, sum, criteria) => {
     scores.push(sum[option][crit]);
   };
 
+  //might be a more efficient way to do this but this adds the total to the results graph
+  scores.push(sum[option].Total)
 
   return {
     title: option,
     barData: {
-      labels: criteria,
+      labels: [...criteria, 'Total'],
       datasets: [{
         data: scores,
       }, ],
     }
   };
 }
-
-
 
 export default winner;

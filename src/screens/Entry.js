@@ -156,7 +156,7 @@ const Entry = ({ route, navigation }) => {
       {
         (copiedCode) ? <Text style={{textAlign: 'center'}}>Room Code Copied!</Text> : null
       }
-      <Button title="Submit" onPress={() => handleSubmit()} />
+      {!isLoading && <Button title="Submit" onPress={() => handleSubmit()} />}
     </SafeAreaView>
   );
 };
