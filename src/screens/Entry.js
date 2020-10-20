@@ -8,7 +8,7 @@ import {
   SectionList,
   Button,
   TouchableOpacity,
-  ActivityIndicator,
+  ActivityIndicator, Clipboard
 } from "react-native";
 import Form from "../components/Form";
 import exampleData from "../../exampleData.json";
@@ -16,6 +16,8 @@ import { fonts, colors } from "../styles/all_styles";
 import { firebase } from "../../utils/firebase";
 import Header from "../components/01_Atoms/Header";
 import FormOption from "../components/FormOption";
+import { Icon } from 'react-native-elements'
+// import Clipboard from '@react-native-community/clipboard';
 
 const fixSectionData = (json) =>
   json.options.map((option) => ({
@@ -30,6 +32,13 @@ const Entry = ({ route, navigation }) => {
   const [values, setValues] = useState(null);
   const [pollId, setPollId] = useState(null);
   const roomCode = route.params.roomCode;
+  const [copiedCode, setCopiedCode] = useState(false)
+
+  // for copying room code to clipboard
+  const copyToClipboard = () => {
+    Clipboard.setString(roomCode)
+    setCopiedCode(true)
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -110,8 +119,15 @@ const Entry = ({ route, navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ padding: 10 }}>
+        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 }}>
+          <Text style={fonts.h1}>Room Code: {roomCode}</Text>
+          <TouchableOpacity onPress={copyToClipboard}>
+            <Icon name='clipboard' type='material-community' />
+          </TouchableOpacity>
+        </View>
+
         <Text style={fonts.h1}>Prompt </Text>
-        <Text style={fonts.h1}>Share the room code: {roomCode}</Text>
+
         <Text style={[fonts.h1, { fontWeight: "normal" }]}>
           {data != null ? data.prompt : "isLoading..."}
         </Text>
@@ -119,24 +135,27 @@ const Entry = ({ route, navigation }) => {
       {isLoading ? (
         <ActivityIndicator />
       ) : (
-        <SectionList
-          sections={sectionData}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ width: "100%", paddingBottom: 200 }}
-          keyExtractor={(index) => `${index}`}
-          renderItem={({ section: { title } }) => (
-            <FormOption
-              criteria={data.criteria}
-              values={values}
-              setValues={setValues}
-              option={title}
-            />
-          )}
-          renderSectionHeader={({ section: { title } }) => (
-            <Header navigation={navigation} title={title} />
-          )}
-        />
-      )}
+          <SectionList
+            sections={sectionData}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ width: "100%", paddingBottom: 200 }}
+            keyExtractor={(index) => `${index}`}
+            renderItem={({ section: { title } }) => (
+              <FormOption
+                criteria={data.criteria}
+                values={values}
+                setValues={setValues}
+                option={title}
+              />
+            )}
+            renderSectionHeader={({ section: { title } }) => (
+              <Header navigation={navigation} title={title} />
+            )}
+          />
+        )}
+      {
+        (copiedCode) ? <Text style={{textAlign: 'center'}}>Room Code Copied!</Text> : null
+      }
       {!isLoading && <Button title="Submit" onPress={() => handleSubmit()} />}
     </SafeAreaView>
   );

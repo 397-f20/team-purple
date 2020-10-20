@@ -12,7 +12,7 @@ const Header = ({ route, navigation, title }) => {
     return (
         <View style={styles.header}>
         <Text style={fonts.h2}>{title}</Text>
-        {/* <TouchableOpacity
+         {/* <TouchableOpacity
           onPress={() => navigation.navigate("Description")}
         >
           <Text style={[fonts.h2, { fontWeight: "normal" }]}>more</Text>
