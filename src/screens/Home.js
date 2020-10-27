@@ -1,14 +1,7 @@
 import React from "react";
-import {
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  Text,
-  View,
-  SectionList, Button, TextInput, Image
-} from "react-native";
+import { StyleSheet, SafeAreaView, Text, Button, TextInput, Image} from "react-native";
 import { fonts } from '../styles/all_styles';
-
+import RoomCodeEntry from '../components/01_Atoms/RoomCodeEntry';
 
 const Home = ({ route, navigation }) => {
   React.useLayoutEffect(() => {
@@ -30,14 +23,8 @@ const Home = ({ route, navigation }) => {
         source={require('../../assets/logo.png')}
       />
 
-      <Text style={[fonts.h1, { marginBottom: 15 }]}>Room Code:</Text>
-      <TextInput
-        style={styles.input}
-        onSubmitEditing={() => navigation.navigate("Entry", { roomCode })}
-        onChangeText={(text) => setRoomCode(text)}
-        value={roomCode}
-      />
-
+      {/* entry for room code */}
+      <RoomCodeEntry roomCode={roomCode} setRoomCode={setRoomCode} navigation={navigation}/>
 
     </SafeAreaView>
   );
@@ -54,10 +41,6 @@ const styles = StyleSheet.create({
     height: 40,
     width: '80%',
     backgroundColor: 'white'
-  },
-  field: {
-    display: "flex",
-    flexDirection: "row",
   },
   formContainer: {
     marginHorizontal: "10%",
