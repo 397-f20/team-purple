@@ -5,14 +5,16 @@ import RoomCodeEntry from '../components/01_Atoms/RoomCodeEntry';
 
 const Home = ({ route, navigation }) => {
   React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <Button
-          title="New Poll"
-          onPress={() => navigation.navigate("NewPoll")}
-        />
-      ),
-    });
+    if (navigation){
+      navigation.setOptions({
+        headerRight: () => (
+          <Button
+            title="New Poll"
+            onPress={() => navigation.navigate("NewPoll")}
+          />
+        ),
+      });
+    }
   }, [navigation]);
 
   const [roomCode, setRoomCode] = React.useState("");
