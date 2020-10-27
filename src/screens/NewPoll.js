@@ -84,10 +84,10 @@ const NewPoll = ({ navigation, route }) => {
             />
           ))}
           {options.length < 5 && (
-            <Button onPress={() => addOption()}>Add option</Button>
+            <Button onPress={() => addOption()} title="Add Option"/>
           )}
           {options.length > 1 && (
-            <Button onPress={() => removeOption()}>Remove option</Button>
+            <Button onPress={() => removeOption()} title="Remove Option"/>
           )}
           <Text>Criteria</Text>
           {criteria.map((crit, index) => (
@@ -99,10 +99,10 @@ const NewPoll = ({ navigation, route }) => {
             />
           ))}
           {criteria.length < 5 && (
-            <Button onPress={() => addCriteria()}>Add criteria</Button>
+            <Button onPress={() => addCriteria()} title="Add Criteria"/>
           )}
           {criteria.length > 1 && (
-            <Button onPress={() => removeCriteria()}>Remove criteria</Button>
+            <Button onPress={() => removeCriteria()}title="Remove Criteria"/>
           )}
           <Form.Button title={"Create"} />
           {/* {<Form.ErrorMessage error={submitError} visible={true} />} */}
