@@ -2,23 +2,20 @@ import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   SafeAreaView,
-  ScrollView,
   Text,
   View,
-  SectionList,
-  Button,
   ActivityIndicator,
 } from "react-native";
 import { fonts, colors } from "../styles/all_styles";
 import { firebase } from "../../utils/firebase";
 import ResultGraph from "../components/02_Molecules/ResultGraph";
 import { BarChart, StackedBarChart } from "react-native-chart-kit";
-import winner from "../../utils/winner";
+import decision from "../../utils/decision";
 
 const Results = ({ route, navigation }) => {
   const [pollData, setPollData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [win, setWin] = useState(null);
+  const [winner, setWinner] = useState(null);
   const pollId = route.params.pollId;
 
   useEffect(() => {
@@ -38,25 +35,12 @@ const Results = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
-    if (win == null && pollData != null) setWin(winner(pollData));
+    if (winner == null && pollData != null) setWinner(decision(pollData));
   }, [pollData]);
-
-  // CHART DATA-------------------------------------------------
-  const chartConfig = {
-    backgroundGradientFrom: "transparent",
-    backgroundGradientTo: "transparent",
-    backgroundGradientFromOpacity: 0,
-    backgroundGradientToOpacity: 0,
-    color: (opacity = 1) => colors.primaryColor,
-    strokeWidth: 2,
-    barPercentage: 0.7,
-    fillShadowGradient: colors.primaryColor,
-    fillShadowGradientOpacity: 1,
-  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {win == null ? (
+      {winner == null ? (
         <ActivityIndicator />
       ) : (
         <View style={styles.contentContainer}>
@@ -66,10 +50,10 @@ const Results = ({ route, navigation }) => {
           <Text style={fonts.p}>{pollData.prompt}</Text>
 
           <Text style={[fonts.h2]}>Winner</Text>
-          <ResultGraph title={win[0].title} data={win[0].barData} />
+          <ResultGraph title={winner[0].title} data={winner[0].barData} />
 
           <Text style={[fonts.h2]}>Other Results</Text>
-          {win.slice(1).map((option) => (
+          {winner.slice(1).map((option) => (
             <ResultGraph title={option.title} data={option.barData} />
           ))}
         </View>
