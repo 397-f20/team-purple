@@ -38,7 +38,8 @@
     "yup": "^0.29.3"
   },
   "devDependencies": {
-    "@babel/core": "~7.9.0"
+    "@babel/core": "~7.9.0",
+    "react-test-renderer": "^17.0.1"
   },
   "jest": {
     "preset": "jest-expo",
