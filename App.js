@@ -16,6 +16,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen name="Results" component={Results} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen
           name="NewPoll"
@@ -26,7 +27,6 @@ export default function App() {
         {/* change name to option.name or state */}
         <Stack.Screen name="Description" component={Description} />
         <Stack.Screen name="Confirmation" component={Confirmation} />
-        <Stack.Screen name="Results" component={Results} />
       </Stack.Navigator>
     </NavigationContainer>
   );
