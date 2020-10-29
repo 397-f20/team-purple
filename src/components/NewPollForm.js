@@ -57,6 +57,7 @@ const NewPollForm = ({ navigation, route }) => {
         >
           <Text>Prompt</Text>
           <Form.Field
+            data-cy="PromptInput"
             name="prompt"
             leftIcon=""
             placeholder="Prompt"

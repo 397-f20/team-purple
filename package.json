@@ -8,7 +8,8 @@
     "eject": "expo eject",
     "predeploy": "expo build:web",
     "deploy-hosting": "npm run predeploy && firebase deploy --only hosting",
-    "test": "jest"
+    "test": "jest",
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "@react-native-community/clipboard": "^1.5.0",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
+    "cypress": "^5.5.0",
     "react-test-renderer": "^17.0.1"
   },
   "jest": {
