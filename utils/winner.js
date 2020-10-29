@@ -40,18 +40,15 @@ const winner = (pollData) => {
 
   //calls getResult with each option, then sort the list
   let res = data.options.map((option) =>
-    getResults(option, sum, data.criteria)
+    getResults(option, sum, data.criteria, votes.length)
   );
-  res.sort((a, b) =>
-    a.barData.datasets[0].data.Total > b.barData.datasets[0].data.Total ? 1 : -1
-  );
+  res.sort((a, b) => (a.overall > b.overall ? 1 : -1));
 
-  console.log(res);
-
+  
   return res;
 };
 
-const getResults = (option, sum, criteria) => {
+const getResults = (option, sum, criteria, voteCount) => {
   let scores = [];
   for (let crit of criteria) {
     scores.push(sum[option][crit]);
@@ -60,27 +57,32 @@ const getResults = (option, sum, criteria) => {
   //might be a more efficient way to do this but this adds the total to the results graph
   scores.push(sum[option].Total);
 
-  /*{
-    title: option,
-    overall: Number,
-    criteriaRatings: [{
-      name: String,
-      rating: Number
-    }]
-  }*/
-  console.log(scores);
+
+  
+  const scaledOverallRating = scaleBetween(
+    scores[scores.length - 1],
+    1,
+    5,
+    1 * voteCount * criteria.length,
+    5 * voteCount * criteria.length
+  );
+  console.log(scores[scores.length - 1], scaledOverallRating)
+
+  const scaledCriteriaRating = scores.slice(0, -1).map((item) => 
+    scaleBetween(item, 1, 5, 1 * voteCount, 5 * voteCount));
 
   return {
     title: option,
-    barData: {
-      labels: [...criteria, "Total"],
-      datasets: [
-        {
-          data: scores,
-        },
-      ],
-    },
+    overall: scaledOverallRating,
+    labels: [...criteria],
+    criteriaRatings: scaledCriteriaRating,
   };
 };
+
+function scaleBetween(unscaledNum, minAllowed, maxAllowed, min, max) {
+  return (
+    ((maxAllowed - minAllowed) * (unscaledNum - min)) / (max - min) + minAllowed
+  );
+}
 
 export default winner;

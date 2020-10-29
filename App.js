@@ -16,7 +16,8 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Results" component={Results} />
+      <Stack.Screen name="Results" component={Results} />
+
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen
           name="NewPoll"

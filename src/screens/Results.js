@@ -8,6 +8,7 @@ import {
   SectionList,
   Button,
   ActivityIndicator,
+  FlatList,
 } from "react-native";
 import { fonts, colors } from "../styles/all_styles";
 import { firebase } from "../../utils/firebase";
@@ -22,7 +23,7 @@ const Results = ({ route, navigation }) => {
   const [win, setWin] = useState(null);
   let pollId;
   if (!route.params) {
-    pollId = "-MJ-uZfinnyI0wP1jAH1";
+    pollId = "-MKq65RirJuEavylaDax";
   } else {
     pollId = route.params.pollId;
   }
@@ -47,6 +48,15 @@ const Results = ({ route, navigation }) => {
     if (win == null && pollData != null) setWin(winner(pollData));
   }, [pollData]);
 
+  // win = [{
+  //   title: option,
+  //   overall: scaledOverallRating,
+  //   labels: [...criteria],
+  //   criteriaRatings: scaledCriteriaRating,
+  // }, {
+
+  // }]
+
   return (
     <SafeAreaView style={styles.container}>
       {win == null ? (
@@ -61,9 +71,9 @@ const Results = ({ route, navigation }) => {
           <Text style={[fonts.h2, { marginBottom: 10 }]}>Winner</Text>
           <Header navigation={navigation} title={win[0].title} />
           <View style={styles.starContainer}>
-            <Text style={[fonts.h3]}>Overall: {2.24}</Text>
+            <Text style={[fonts.h3]}>Overall: {win[0].overall}</Text>
             <Stars
-              default={Math.round(2.25 * 2) / 2}
+              default={Math.round(win[0].overall * 2) / 2}
               count={5}
               half={true}
               fullStar={<Icon name={"star"} style={[styles.myStarStyle]} />}
@@ -84,7 +94,48 @@ const Results = ({ route, navigation }) => {
             <Text style={[fonts.h3, { fontSize: 12, color: "grey" }]}>
               Criteria Results
             </Text>
+            <FlatList
+              data={win[0].criteriaRatings}
+              keyExtractor={(item) => `${item}`}
+              contentContainerStyle={{ paddingBottom: 50 }}
+              renderItem={({ item, index }) => (
+                <View style={styles.criteriaRatings}>
+                  <Text>{win[0].labels[index]}</Text>
+                  <Stars
+                    default={Math.round(win[0].criteriaRatings[index] * 2) / 2}
+                    count={5}
+                    half={true}
+                    fullStar={
+                      <Icon
+                        name={"star"}
+                        style={[styles.myStarStyle, { fontSize: 18 }]}
+                      />
+                    }
+                    emptyStar={
+                      <Icon
+                        name={"star-outline"}
+                        style={[
+                          styles.myStarStyle,
+                          styles.myEmptyStarStyle,
+                          { fontSize: 18 },
+                        ]}
+                      />
+                    }
+                    halfStar={
+                      <Icon
+                        name={"star-half"}
+                        style={[styles.myStarStyle, { fontSize: 18 }]}
+                      />
+                    }
+                    disabled={true}
+                  />
+                </View>
+              )}
+            />
           </View>
+
+                  <View style={styles.divider} />
+
 
           <Text style={[fonts.h2, { marginBottom: 10, color: "grey" }]}>
             Other Results
@@ -97,6 +148,69 @@ const Results = ({ route, navigation }) => {
                 backgroundColor={"#A9A9A9"}
                 textColor={"white"}
               />
+
+              <View style={styles.starContainer}>
+                <Text style={[fonts.h3, {color: 'grey'}]}>Overall: {option.overall}</Text>
+                <Stars
+                  default={Math.round(option.overall * 2) / 2}
+                  count={5}
+                  half={true}
+                  fullStar={<Icon name={"star"} style={[styles.myStarStyle, {color: 'grey'}]} />}
+                  emptyStar={
+                    <Icon
+                      name={"star-outline"}
+                      style={[styles.myStarStyle, styles.myEmptyStarStyle, {color: 'grey'}]}
+                    />
+                  }
+                  halfStar={
+                    <Icon name={"star-half"} style={[styles.myStarStyle, {color: 'grey'}]} />
+                  }
+                  disabled={true}
+                />
+              </View>
+              <View style={styles.criteriaContainer}>
+            <Text style={[fonts.h3, { fontSize: 12, color: "grey" }]}>
+              Criteria Results
+            </Text>
+            <FlatList
+              data={option.criteriaRatings}
+              keyExtractor={(item) => `${item}`}
+              contentContainerStyle={{ paddingBottom: 50 }}
+              renderItem={({ item, index }) => (
+                <View style={styles.criteriaRatings}>
+                  <Text>{option.labels[index]}</Text>
+                  <Stars
+                    default={Math.round(option.criteriaRatings[index] * 2) / 2}
+                    count={5}
+                    half={true}
+                    fullStar={
+                      <Icon
+                        name={"star"}
+                        style={[styles.myStarStyle, { fontSize: 18,  color: "grey"  }]}
+                      />
+                    }
+                    emptyStar={
+                      <Icon
+                        name={"star-outline"}
+                        style={[
+                          styles.myStarStyle,
+                          styles.myEmptyStarStyle,
+                          { fontSize: 18,  color: "grey"  },
+                        ]}
+                      />
+                    }
+                    halfStar={
+                      <Icon
+                        name={"star-half"}
+                        style={[styles.myStarStyle, { fontSize: 18, color: "grey"  }]}
+                      />
+                    }
+                    disabled={true}
+                  />
+                </View>
+              )}
+            />
+          </View>
             </View>
           ))}
         </View>
@@ -106,6 +220,15 @@ const Results = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  divider: {
+    marginVertical: 20,
+    marginBottom: 35,
+    borderBottomColor: "grey",
+    borderBottomWidth: 0.5, 
+    opacity: 0.5,
+    width: "90%",
+    alignSelf: "center"
+  },
   container: {
     marginHorizontal: "5%",
     marginTop: 20,
@@ -124,6 +247,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#F0F0F0",
     height: 100,
     marginVertical: 20,
+  },
+  criteriaRatings: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 5,
   },
   starContainer: {
     flexDirection: "row",
