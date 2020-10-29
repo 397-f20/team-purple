@@ -34,7 +34,7 @@ const Home = ({ route, navigation }) => {
         setRoomCode={setRoomCode}
         navigation={navigation}
       />
-      <Button title="New Poll" onPress={() => navigation.navigate("NewPoll")} />
+      
     </SafeAreaView>
   );
 };
