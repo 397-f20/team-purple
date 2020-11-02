@@ -94,7 +94,7 @@ const Entry = ({ route, navigation }) => {
       setSubmitError(error.message);
     });
 
-    navigation.navigate("Confirmation", { pollId, roomCode, count });
+    navigation.navigate("Results", { pollId, roomCode, count });
   };
 
   useEffect(() => {
