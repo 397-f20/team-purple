@@ -42,9 +42,8 @@ const winner = (pollData) => {
   let res = data.options.map((option) =>
     getResults(option, sum, data.criteria, votes.length)
   );
-  res.sort((a, b) => (a.overall > b.overall ? 1 : -1));
+  res.sort((a, b) => b.overall - a.overall);
 
-  
   return res;
 };
 
@@ -57,8 +56,6 @@ const getResults = (option, sum, criteria, voteCount) => {
   //might be a more efficient way to do this but this adds the total to the results graph
   scores.push(sum[option].Total);
 
-
-  
   const scaledOverallRating = scaleBetween(
     scores[scores.length - 1],
     1,
@@ -66,10 +63,11 @@ const getResults = (option, sum, criteria, voteCount) => {
     1 * voteCount * criteria.length,
     5 * voteCount * criteria.length
   );
-  console.log(scores[scores.length - 1], scaledOverallRating)
+  console.log(scores[scores.length - 1], scaledOverallRating);
 
-  const scaledCriteriaRating = scores.slice(0, -1).map((item) => 
-    scaleBetween(item, 1, 5, 1 * voteCount, 5 * voteCount));
+  const scaledCriteriaRating = scores
+    .slice(0, -1)
+    .map((item) => scaleBetween(item, 1, 5, 1 * voteCount, 5 * voteCount));
 
   return {
     title: option,

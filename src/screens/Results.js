@@ -9,19 +9,22 @@ import {
   Button,
   ActivityIndicator,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  Clipboard,
 } from "react-native";
 import { fonts, colors } from "../styles/all_styles";
 import { firebase } from "../../utils/firebase";
 import Header from "../components/01_Atoms/Header";
 import winner from "../../utils/winner";
 import Stars from "react-native-stars";
-import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Icon } from "react-native-elements";
 
 const Results = ({ route, navigation }) => {
   const [pollData, setPollData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [win, setWin] = useState(null);
+  const [copiedCode, setCopiedCode] = useState(false);
   const [voteCount, setVoteCount] = useState(route.params.count); // how many votes are in
   var roomCode = route.params.roomCode;
   let pollId;
@@ -32,21 +35,42 @@ const Results = ({ route, navigation }) => {
     pollId = route.params.pollId;
   }
 
+  // for copying room code to clipboard
+  const copyToClipboard = () => {
+    console.log("called copy");
+    Clipboard.setString(roomCode);
+    setCopiedCode(true);
+  };
+
   // change back button to a home button
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <TouchableOpacity 
-        onPress={()=>navigation.navigate("Home")}
-        style={{marginLeft: '10px'}}
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Home")}
+          style={{ marginLeft: "10px" }}
         >
-          <Icon name="home" size={25}/>
+          <MaterialCommunityIcons name="home" size={25} />
         </TouchableOpacity>
-
+      ),
+      headerRight: () => (
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            marginRight: "10px",
+          }}
+        >
+          <Text style={fonts.p}>Room Code: {roomCode}</Text>
+          <TouchableOpacity onPress={() => copyToClipboard()}>
+            <Icon name="clipboard" type="material-community" />
+          </TouchableOpacity>
+        </View>
       ),
     });
   }, [navigation]);
 
+  // getting all vote data from pollId
   useEffect(() => {
     setIsLoading(true);
     const db = firebase.database().ref("polls/" + pollId);
@@ -63,11 +87,10 @@ const Results = ({ route, navigation }) => {
     };
   }, []);
 
-
+  // calls util function for placement of options
   useEffect(() => {
-    if (win == null && pollData != null) setWin(winner(pollData));
+    if (pollData != null) setWin(winner(pollData));
   }, [pollData]);
-
 
   // logic for the vote count
   useEffect(() => {
@@ -88,177 +111,202 @@ const Results = ({ route, navigation }) => {
     };
   }, []);
 
-  // win = [{
-  //   title: option,
-  //   overall: scaledOverallRating,
-  //   labels: [...criteria],
-  //   criteriaRatings: scaledCriteriaRating,
-  // }, {
-
-  // }]
-
   return (
     <SafeAreaView style={styles.container}>
       {win == null ? (
         <ActivityIndicator />
       ) : (
-          <View style={styles.contentContainer}>
-            <View style={styles.voteCountContainer}>
-              <Text style={fonts.p}> Vote Count: </Text>
-              <Text style={[fonts.p, styles.voteCount]}> {voteCount} </Text>
-            </View>
-            <View style={styles.promptContainer}>
-              <Text style={[fonts.h2]}>Prompt</Text>
-              <Text style={fonts.p}>{pollData.prompt}</Text>
-            </View>
+        <View style={styles.contentContainer}>
+          <View style={styles.voteCountContainer}>
+            {copiedCode ? (
+              <Text style={{ textAlign: "center" }}>Room Code Copied!</Text>
+            ) : null}
+          </View>
+          <View style={styles.voteCountContainer}>
+            <Text style={fonts.p}> Vote Count: </Text>
+            <Text style={[fonts.p, styles.voteCount]}> {voteCount} </Text>
+          </View>
+          <View style={styles.promptContainer}>
+            <Text style={[fonts.h2]}>Prompt</Text>
+            <Text style={fonts.p}>{pollData.prompt}</Text>
+          </View>
 
-            <Text style={[fonts.h2, { marginBottom: 10 }]}>Winner</Text>
-            <Header navigation={navigation} title={win[0].title} />
-            <View style={styles.starContainer}>
-              <Text style={[fonts.h3]}>Overall: {win[0].overall}</Text>
-              <Stars
-                default={Math.round(win[0].overall * 2) / 2}
-                count={5}
-                half={true}
-                fullStar={<Icon name={"star"} style={[styles.myStarStyle]} />}
-                emptyStar={
-                  <Icon
-                    name={"star-outline"}
-                    style={[styles.myStarStyle, styles.myEmptyStarStyle]}
-                  />
-                }
-                halfStar={
-                  <Icon name={"star-half"} style={[styles.myStarStyle]} />
-                }
-                disabled={true}
-              />
-            </View>
-
-            <View style={styles.criteriaContainer}>
-              <Text style={[fonts.h3, { fontSize: 12, color: "grey" }]}>
-                Criteria Results
-            </Text>
-              <FlatList
-                data={win[0].criteriaRatings}
-                keyExtractor={(item) => `${item}`}
-                contentContainerStyle={{ paddingBottom: 50 }}
-                renderItem={({ item, index }) => (
-                  <View style={styles.criteriaRatings}>
-                    <Text>{win[0].labels[index]}</Text>
-                    <Stars
-                      default={Math.round(win[0].criteriaRatings[index] * 2) / 2}
-                      count={5}
-                      half={true}
-                      fullStar={
-                        <Icon
-                          name={"star"}
-                          style={[styles.myStarStyle, { fontSize: 18 }]}
-                        />
-                      }
-                      emptyStar={
-                        <Icon
-                          name={"star-outline"}
-                          style={[
-                            styles.myStarStyle,
-                            styles.myEmptyStarStyle,
-                            { fontSize: 18 },
-                          ]}
-                        />
-                      }
-                      halfStar={
-                        <Icon
-                          name={"star-half"}
-                          style={[styles.myStarStyle, { fontSize: 18 }]}
-                        />
-                      }
-                      disabled={true}
-                    />
-                  </View>
-                )}
-              />
-            </View>
-
-            <View style={styles.divider} />
-
-
-            <Text style={[fonts.h2, { marginBottom: 10, color: "grey" }]}>
-              Other Results
-          </Text>
-            {win.slice(1).map((option) => (
-              <View>
-                <Header
-                  navigation={navigation}
-                  title={option.title}
-                  backgroundColor={"#A9A9A9"}
-                  textColor={"white"}
+          <Text style={[fonts.h2, { marginBottom: 10 }]}>Winner</Text>
+          <Header navigation={navigation} title={win[0].title} />
+          <View style={styles.starContainer}>
+            <Text style={[fonts.h3]}>Overall: {win[0].overall.toFixed(2)}</Text>
+            <Stars
+              default={Math.round(win[0].overall * 2) / 2}
+              count={5}
+              half={true}
+              fullStar={
+                <MaterialCommunityIcons
+                  name={"star"}
+                  style={[styles.myStarStyle]}
                 />
+              }
+              emptyStar={
+                <MaterialCommunityIcons
+                  name={"star-outline"}
+                  style={[styles.myStarStyle, styles.myEmptyStarStyle]}
+                />
+              }
+              halfStar={
+                <MaterialCommunityIcons
+                  name={"star-half"}
+                  style={[styles.myStarStyle]}
+                />
+              }
+              disabled={true}
+            />
+          </View>
 
-                <View style={styles.starContainer}>
-                  <Text style={[fonts.h3, { color: 'grey' }]}>Overall: {option.overall}</Text>
+          <View style={styles.criteriaContainer}>
+            <Text style={[fonts.h3, { fontSize: 12, color: "grey" }]}>
+              Criteria Results
+            </Text>
+            <FlatList
+              data={win[0].criteriaRatings}
+              keyExtractor={(item) => `${item}`}
+              contentContainerStyle={{ paddingBottom: 50 }}
+              renderItem={({ item, index }) => (
+                <View style={styles.criteriaRatings}>
+                  <Text>{win[0].labels[index]}</Text>
                   <Stars
-                    default={Math.round(option.overall * 2) / 2}
+                    default={Math.round(win[0].criteriaRatings[index] * 2) / 2}
                     count={5}
                     half={true}
-                    fullStar={<Icon name={"star"} style={[styles.myStarStyle, { color: 'grey' }]} />}
+                    fullStar={
+                      <MaterialCommunityIcons
+                        name={"star"}
+                        style={[styles.myStarStyle, { fontSize: 18 }]}
+                      />
+                    }
                     emptyStar={
-                      <Icon
+                      <MaterialCommunityIcons
                         name={"star-outline"}
-                        style={[styles.myStarStyle, styles.myEmptyStarStyle, { color: 'grey' }]}
+                        style={[
+                          styles.myStarStyle,
+                          styles.myEmptyStarStyle,
+                          { fontSize: 18 },
+                        ]}
                       />
                     }
                     halfStar={
-                      <Icon name={"star-half"} style={[styles.myStarStyle, { color: 'grey' }]} />
+                      <MaterialCommunityIcons
+                        name={"star-half"}
+                        style={[styles.myStarStyle, { fontSize: 18 }]}
+                      />
                     }
                     disabled={true}
                   />
                 </View>
-                <View style={styles.criteriaContainer}>
-                  <Text style={[fonts.h3, { fontSize: 12, color: "grey" }]}>
-                    Criteria Results
-            </Text>
-                  <FlatList
-                    data={option.criteriaRatings}
-                    keyExtractor={(item) => `${item}`}
-                    contentContainerStyle={{ paddingBottom: 50 }}
-                    renderItem={({ item, index }) => (
-                      <View style={styles.criteriaRatings}>
-                        <Text>{option.labels[index]}</Text>
-                        <Stars
-                          default={Math.round(option.criteriaRatings[index] * 2) / 2}
-                          count={5}
-                          half={true}
-                          fullStar={
-                            <Icon
-                              name={"star"}
-                              style={[styles.myStarStyle, { fontSize: 18, color: "grey" }]}
-                            />
-                          }
-                          emptyStar={
-                            <Icon
-                              name={"star-outline"}
-                              style={[
-                                styles.myStarStyle,
-                                styles.myEmptyStarStyle,
-                                { fontSize: 18, color: "grey" },
-                              ]}
-                            />
-                          }
-                          halfStar={
-                            <Icon
-                              name={"star-half"}
-                              style={[styles.myStarStyle, { fontSize: 18, color: "grey" }]}
-                            />
-                          }
-                          disabled={true}
-                        />
-                      </View>
-                    )}
-                  />
-                </View>
-              </View>
-            ))}
+              )}
+            />
           </View>
-        )}
+
+          <View style={styles.divider} />
+
+          <Text style={[fonts.h2, { marginBottom: 10, color: "grey" }]}>
+            Other Results
+          </Text>
+          {win.slice(1).map((option) => (
+            <View>
+              <Header
+                navigation={navigation}
+                title={option.title}
+                backgroundColor={"#A9A9A9"}
+                textColor={"white"}
+              />
+
+              <View style={styles.starContainer}>
+                <Text style={[fonts.h3, { color: "grey" }]}>
+                  Overall: {option.overall.toFixed(2)}
+                </Text>
+                <Stars
+                  default={Math.round(option.overall * 2) / 2}
+                  count={5}
+                  half={true}
+                  fullStar={
+                    <MaterialCommunityIcons
+                      name={"star"}
+                      style={[styles.myStarStyle, { color: "grey" }]}
+                    />
+                  }
+                  emptyStar={
+                    <MaterialCommunityIcons
+                      name={"star-outline"}
+                      style={[
+                        styles.myStarStyle,
+                        styles.myEmptyStarStyle,
+                        { color: "grey" },
+                      ]}
+                    />
+                  }
+                  halfStar={
+                    <MaterialCommunityIcons
+                      name={"star-half"}
+                      style={[styles.myStarStyle, { color: "grey" }]}
+                    />
+                  }
+                  disabled={true}
+                />
+              </View>
+              <View style={styles.criteriaContainer}>
+                <Text style={[fonts.h3, { fontSize: 12, color: "grey" }]}>
+                  Criteria Results
+                </Text>
+                <FlatList
+                  data={option.criteriaRatings}
+                  keyExtractor={(item) => `${item}`}
+                  contentContainerStyle={{ paddingBottom: 50 }}
+                  renderItem={({ item, index }) => (
+                    <View style={styles.criteriaRatings}>
+                      <Text>{option.labels[index]}</Text>
+                      <Stars
+                        default={
+                          Math.round(option.criteriaRatings[index] * 2) / 2
+                        }
+                        count={5}
+                        half={true}
+                        fullStar={
+                          <MaterialCommunityIcons
+                            name={"star"}
+                            style={[
+                              styles.myStarStyle,
+                              { fontSize: 18, color: "grey" },
+                            ]}
+                          />
+                        }
+                        emptyStar={
+                          <MaterialCommunityIcons
+                            name={"star-outline"}
+                            style={[
+                              styles.myStarStyle,
+                              styles.myEmptyStarStyle,
+                              { fontSize: 18, color: "grey" },
+                            ]}
+                          />
+                        }
+                        halfStar={
+                          <MaterialCommunityIcons
+                            name={"star-half"}
+                            style={[
+                              styles.myStarStyle,
+                              { fontSize: 18, color: "grey" },
+                            ]}
+                          />
+                        }
+                        disabled={true}
+                      />
+                    </View>
+                  )}
+                />
+              </View>
+            </View>
+          ))}
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -279,7 +327,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     opacity: 0.5,
     width: "90%",
-    alignSelf: "center"
+    alignSelf: "center",
   },
   container: {
     marginHorizontal: "5%",
@@ -308,6 +356,7 @@ const styles = StyleSheet.create({
   starContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
   },
   myStarStyle: {
     color: colors.primaryColor,
@@ -322,16 +371,15 @@ const styles = StyleSheet.create({
     color: "white",
   },
   voteCountContainer: {
-    width: '100%',
-    display: 'flex', 
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   voteCount: {
     color: colors.primaryColor,
-    fontWeight: 'bold'
-  }
+    fontWeight: "bold",
+  },
 });
 
 export default Results;
