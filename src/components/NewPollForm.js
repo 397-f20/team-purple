@@ -4,6 +4,7 @@ import Form from "../components/Form";
 import * as Yup from "yup";
 
 import { firebase } from "../../utils/firebase";
+import validatePollForm from "../../utils/pollValidation";
 
 import randomWords from "random-words";
 
@@ -24,12 +25,17 @@ const validationSchema = Yup.object().shape({
   // criteria: ,
 });
 
+const placeholders = {
+  options: ["movie 1", "movie 2"],
+  criteria: ["vfx", "act", "sound"],
+};
+
 // FIXME: A text node cannot be a child of a <View>
 const NewPollForm = ({ navigation, route }) => {
   const [submitError, setSubmitError] = useState("");
-  const [prompt, setPrompt] = useState("Which movie are we watching?");
-  const [options, setOptions] = useState(["movie 1", "movie 2"]);
-  const [criteria, setCriteria] = useState(["writing", "vfx", "acting"]);
+  const [prompt, setPrompt] = useState("");
+  const [options, setOptions] = useState(["", ""]);
+  const [criteria, setCriteria] = useState(["", "", ""]);
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMesssage] = useState("");
 
@@ -46,12 +52,16 @@ const NewPollForm = ({ navigation, route }) => {
   };
 
   const removeCriteria = () => {
-    setOptions(criteria.slice(0, criteria.length - 1));
+    setCriteria(criteria.slice(0, criteria.length - 1));
   };
 
   async function handleSubmit(values) {
     console.log(values);
     const { prompt, options, criteria } = values;
+
+    let valid = validatePollForm(options, criteria);
+    console.log(valid);
+    setErrorMesssage(valid);
 
     const hasRepeats = (array) => {
       let seen = {};
@@ -61,17 +71,19 @@ const NewPollForm = ({ navigation, route }) => {
       }
     };
 
-    if (hasRepeats(options)) {
-      setErrorMesssage("No repeated options!");
-      setHasError(true);
-      return;
-    }
+    // if (hasRepeats(options)) {
+    //   setErrorMesssage("No repeated options!");
+    //   setHasError(true);
+    //   return;
+    // }
 
-    if (hasRepeats(criteria)) {
-      setErrorMesssage("No repeated criteria!");
-      setHasError(true);
-      return;
-    }
+    // if (hasRepeats(criteria)) {
+    //   setErrorMesssage("No repeated criteria!");
+    //   setHasError(true);
+    //   return;
+    // }
+
+    if (valid != "") return;
 
     const roomCode = randomWords();
     console.log(roomCode);
@@ -102,7 +114,7 @@ const NewPollForm = ({ navigation, route }) => {
           <Form.Field
             name="prompt"
             leftIcon=""
-            placeholder="Prompt"
+            placeholder="What movie are we watching?"
             autoCapitalize="none"
             autoFocus={true}
           />
@@ -112,7 +124,11 @@ const NewPollForm = ({ navigation, route }) => {
               key={`options[${index}]`}
               name={`options[${index}]`}
               leftIcon="calendar-range"
-              placeholder={op}
+              placeholder={
+                index < placeholders.options.length
+                  ? placeholders.options[index]
+                  : `option #${index + 1}`
+              }
               autoCapitalize="none"
             />
           ))}
@@ -128,7 +144,11 @@ const NewPollForm = ({ navigation, route }) => {
               key={`criteria[${index}]`}
               name={`criteria[${index}]`}
               leftIcon="calendar-range"
-              placeholder={crit}
+              placeholder={
+                index < placeholders.criteria.length
+                  ? placeholders.criteria[index]
+                  : `criteria #${index + 1}`
+              }
               autoCapitalize="none"
             />
           ))}
@@ -138,7 +158,12 @@ const NewPollForm = ({ navigation, route }) => {
           {criteria.length > 1 && (
             <Button onPress={() => removeCriteria()} title="Remove criteria" />
           )}
-          {<Form.ErrorMessage error={errorMessage} visible={hasError} />}
+          {
+            <Form.ErrorMessage
+              error={errorMessage}
+              visible={errorMessage != ""}
+            />
+          }
           <Form.Button title={"Create"} />
         </Form>
       </ScrollView>
