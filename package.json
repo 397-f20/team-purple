@@ -9,7 +9,8 @@
     "predeploy": "expo build:web",
     "deploy-hosting": "npm run predeploy && firebase deploy --only hosting",
     "test": "jest",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "test:ci": "jest --forceExit --detectOpenHandles && start-server-and-test web http://localhost:19006 cypress:ci"
   },
   "dependencies": {
     "@react-native-community/clipboard": "^1.5.0",
@@ -17,7 +18,9 @@
     "@react-navigation/native": "^5.7.4",
     "@react-navigation/stack": "^5.9.1",
     "@testing-library/react-native": "^7.0.2",
-    "expo": "^39.0.3",
+    "enzyme": "^3.11.0",
+    "expo": "^39.0.4",
+    "expo-cli": "^3.28.5",
     "expo-status-bar": "~1.0.2",
     "firebase": "7.9.0",
     "formik": "^2.1.5",
@@ -50,6 +53,10 @@
     ],
     "setupFiles": [
       "<rootDir>/jest/setup.js"
+    ],
+    "testMatch": [
+      "**/src/tests/**/*.[jt]s?(x)",
+      "**/?(*.)+test.[jt]s?(x)"
     ]
   },
   "private": true

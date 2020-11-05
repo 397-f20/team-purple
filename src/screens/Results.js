@@ -19,6 +19,7 @@ import winner from "../../utils/winner";
 import Stars from "react-native-stars";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Icon } from "react-native-elements";
+import ResultSection from "../components/02_Molecules/ResultSection";
 
 const Results = ({ route, navigation }) => {
   const [pollData, setPollData] = useState(null);
@@ -132,78 +133,7 @@ const Results = ({ route, navigation }) => {
           </View>
 
           <Text style={[fonts.h2, { marginBottom: 10 }]}>Winner</Text>
-          <Header navigation={navigation} title={win[0].title} />
-          <View style={styles.starContainer}>
-            <Text style={[fonts.h3]}>Overall: {win[0].overall.toFixed(2)}</Text>
-            <Stars
-              default={Math.round(win[0].overall * 2) / 2}
-              count={5}
-              half={true}
-              fullStar={
-                <MaterialCommunityIcons
-                  name={"star"}
-                  style={[styles.myStarStyle]}
-                />
-              }
-              emptyStar={
-                <MaterialCommunityIcons
-                  name={"star-outline"}
-                  style={[styles.myStarStyle, styles.myEmptyStarStyle]}
-                />
-              }
-              halfStar={
-                <MaterialCommunityIcons
-                  name={"star-half"}
-                  style={[styles.myStarStyle]}
-                />
-              }
-              disabled={true}
-            />
-          </View>
-
-          <View style={styles.criteriaContainer}>
-            <Text style={[fonts.h3, { fontSize: 12, color: "grey" }]}>
-              Criteria Results
-            </Text>
-            <FlatList
-              data={win[0].criteriaRatings}
-              keyExtractor={(item) => `${item}`}
-              contentContainerStyle={{ paddingBottom: 50 }}
-              renderItem={({ item, index }) => (
-                <View style={styles.criteriaRatings}>
-                  <Text>{win[0].labels[index]}</Text>
-                  <Stars
-                    default={Math.round(win[0].criteriaRatings[index] * 2) / 2}
-                    count={5}
-                    half={true}
-                    fullStar={
-                      <MaterialCommunityIcons
-                        name={"star"}
-                        style={[styles.myStarStyle, { fontSize: 18 }]}
-                      />
-                    }
-                    emptyStar={
-                      <MaterialCommunityIcons
-                        name={"star-outline"}
-                        style={[
-                          styles.myStarStyle,
-                          styles.myEmptyStarStyle,
-                          { fontSize: 18 },
-                        ]}
-                      />
-                    }
-                    halfStar={
-                      <MaterialCommunityIcons
-                        name={"star-half"}
-                        style={[styles.myStarStyle, { fontSize: 18 }]}
-                      />
-                    }
-                    disabled={true}
-                  />
-                </View>
-              )}
-            />
-          </View>
+          <ResultSection data={win[0]}/>
 
           <View style={styles.divider} />
 
@@ -211,99 +141,7 @@ const Results = ({ route, navigation }) => {
             Other Results
           </Text>
           {win.slice(1).map((option) => (
-            <View>
-              <Header
-                navigation={navigation}
-                title={option.title}
-                backgroundColor={"#A9A9A9"}
-                textColor={"white"}
-              />
-
-              <View style={styles.starContainer}>
-                <Text style={[fonts.h3, { color: "grey" }]}>
-                  Overall: {option.overall.toFixed(2)}
-                </Text>
-                <Stars
-                  default={Math.round(option.overall * 2) / 2}
-                  count={5}
-                  half={true}
-                  fullStar={
-                    <MaterialCommunityIcons
-                      name={"star"}
-                      style={[styles.myStarStyle, { color: "grey" }]}
-                    />
-                  }
-                  emptyStar={
-                    <MaterialCommunityIcons
-                      name={"star-outline"}
-                      style={[
-                        styles.myStarStyle,
-                        styles.myEmptyStarStyle,
-                        { color: "grey" },
-                      ]}
-                    />
-                  }
-                  halfStar={
-                    <MaterialCommunityIcons
-                      name={"star-half"}
-                      style={[styles.myStarStyle, { color: "grey" }]}
-                    />
-                  }
-                  disabled={true}
-                />
-              </View>
-              <View style={styles.criteriaContainer}>
-                <Text style={[fonts.h3, { fontSize: 12, color: "grey" }]}>
-                  Criteria Results
-                </Text>
-                <FlatList
-                  data={option.criteriaRatings}
-                  keyExtractor={(item) => `${item}`}
-                  contentContainerStyle={{ paddingBottom: 50 }}
-                  renderItem={({ item, index }) => (
-                    <View style={styles.criteriaRatings}>
-                      <Text>{option.labels[index]}</Text>
-                      <Stars
-                        default={
-                          Math.round(option.criteriaRatings[index] * 2) / 2
-                        }
-                        count={5}
-                        half={true}
-                        fullStar={
-                          <MaterialCommunityIcons
-                            name={"star"}
-                            style={[
-                              styles.myStarStyle,
-                              { fontSize: 18, color: "grey" },
-                            ]}
-                          />
-                        }
-                        emptyStar={
-                          <MaterialCommunityIcons
-                            name={"star-outline"}
-                            style={[
-                              styles.myStarStyle,
-                              styles.myEmptyStarStyle,
-                              { fontSize: 18, color: "grey" },
-                            ]}
-                          />
-                        }
-                        halfStar={
-                          <MaterialCommunityIcons
-                            name={"star-half"}
-                            style={[
-                              styles.myStarStyle,
-                              { fontSize: 18, color: "grey" },
-                            ]}
-                          />
-                        }
-                        disabled={true}
-                      />
-                    </View>
-                  )}
-                />
-              </View>
-            </View>
+            <ResultSection headerColor={"#A9A9A9"} data={option} other={true}/>
           ))}
         </View>
       )}
