@@ -132,6 +132,9 @@ const Results = ({ route, navigation }) => {
           </View>
 
           <Text style={[fonts.h2, { marginBottom: 10 }]}>Winner</Text>
+          {win.map((option) => (
+            (option.win)?
+          <>
           <Header navigation={navigation} title={win[0].title} />
           <View style={styles.starContainer}>
             <Text style={[fonts.h3]}>Overall: {win[0].overall.toFixed(2)}</Text>
@@ -204,13 +207,15 @@ const Results = ({ route, navigation }) => {
               )}
             />
           </View>
+          </> : null))}
 
           <View style={styles.divider} />
 
           <Text style={[fonts.h2, { marginBottom: 10, color: "grey" }]}>
             Other Results
           </Text>
-          {win.slice(1).map((option) => (
+          {win.map((option) => (
+            (!option.win)?
             <View>
               <Header
                 navigation={navigation}
@@ -303,7 +308,7 @@ const Results = ({ route, navigation }) => {
                   )}
                 />
               </View>
-            </View>
+            </View> : null
           ))}
         </View>
       )}
