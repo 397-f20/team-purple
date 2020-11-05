@@ -44,10 +44,24 @@ const winner = (pollData) => {
   );
   res.sort((a, b) => b.overall - a.overall);
 
+  // account for if multiple winners / tie
+  var winVoteCount = res[0].overall
+  for (var i=0; i<res.length; i++){
+    // mark it as a winner if it has the same score
+    if (res[i].overall == winVoteCount){
+      res[i].win = true
+    }
+    // don't need to check the rest of the list if it doesnt match
+    else{
+      break
+    }
+  }
   return res;
 };
 
+// scale to 5 star rating and convert to UI format
 const getResults = (option, sum, criteria, voteCount) => {
+  // aggregate
   let scores = [];
   for (let crit of criteria) {
     scores.push(sum[option][crit]);
@@ -74,9 +88,11 @@ const getResults = (option, sum, criteria, voteCount) => {
     overall: scaledOverallRating,
     labels: [...criteria],
     criteriaRatings: scaledCriteriaRating,
+    win: false
   };
 };
 
+// scale to 5 star rating
 function scaleBetween(unscaledNum, minAllowed, maxAllowed, min, max) {
   return (
     ((maxAllowed - minAllowed) * (unscaledNum - min)) / (max - min) + minAllowed

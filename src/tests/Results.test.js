@@ -3,7 +3,7 @@ import { render, fireEvent } from "@testing-library/react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import renderer from "react-test-renderer";
 
-import Results from "./Results";
+import Results from "../screens/Results";
 
 
 
@@ -55,12 +55,9 @@ import Results from "./Results";
 // });
 
 
-//dummy test so file compiles
-
 describe("<Results />", () => {
   it("has 1 child", async () => {
-    const tree = [1]
-
+    const tree = renderer.create(<Results />).toJSON();
       expect(tree.length).toBe(1);
   });
 });

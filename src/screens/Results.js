@@ -133,15 +133,18 @@ const Results = ({ route, navigation }) => {
           </View>
 
           <Text style={[fonts.h2, { marginBottom: 10 }]}>Winner</Text>
-          <ResultSection data={win[0]}/>
+          {win.map((option) => (
+            (option.win)?
+            <ResultSection data={option}/> : null))}
 
           <View style={styles.divider} />
 
           <Text style={[fonts.h2, { marginBottom: 10, color: "grey" }]}>
             Other Results
           </Text>
-          {win.slice(1).map((option) => (
-            <ResultSection headerColor={"#A9A9A9"} data={option} other={true}/>
+          {win.map((option) => (
+            (!option.win)?
+            <ResultSection headerColor={"#A9A9A9"} headerTextColor={"white"} data={option} other={true}/> : null
           ))}
         </View>
       )}
@@ -178,30 +181,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 20,
-  },
-  criteriaContainer: {
-    padding: 15,
-    borderRadius: 8,
-    backgroundColor: "#F0F0F0",
-    height: 100,
-    marginVertical: 20,
-  },
-  criteriaRatings: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginVertical: 5,
-  },
-  starContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  myStarStyle: {
-    color: colors.primaryColor,
-    fontSize: 25,
-  },
-  myEmptyStarStyle: {
-    color: colors.primaryColor,
   },
   roomCode: {
     ...buttonBase,

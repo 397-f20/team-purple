@@ -18,10 +18,10 @@ import Stars from "react-native-stars";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Icon } from "react-native-elements";
 
-const ResultSection = ({ data, headerColor, other }) => {
+const ResultSection = ({ data, headerColor, headerTextColor, other }) => {
   return (
     <View>
-      <Header title={data.title} backgroundColor={headerColor} />
+      <Header title={data.title} backgroundColor={headerColor} textColor={headerTextColor} />
       <View style={styles.starContainer}>
         <Text
           style={[fonts.h3, { color: other ? "grey" : colors.primaryColor }]}
