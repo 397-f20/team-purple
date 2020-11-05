@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
 import { fonts, colors } from "../../styles/all_styles";
 
-const Header = ({ route, navigation, title, backgroundColor, textColor }) => {
+const Header = ({title, backgroundColor, textColor }) => {
   return (
     <View
       style={[
