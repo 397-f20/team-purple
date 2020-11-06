@@ -1,11 +1,10 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
 
 import Home from '../screens/Home';
 
-describe('<Home />', () => {
-    it('renders <RoomCodeEntry />', () => {
-        const wrapper = shallow(<Home/>);
-        expect(wrapper.containsMatchingElement(<Child />)).toEqual(true);
+describe('<Home/>', () => {
+    it('<RoomCodeEntry/>', () => {
+      const wrapper = shallow(<Home />);
+      expect(wrapper.containsMatchingElement(<RoomCodeEntry />)).toEqual(true);
     });
   });
