@@ -8,7 +8,8 @@ import {
   SectionList,
   Button,
   TouchableOpacity,
-  ActivityIndicator, Clipboard
+  ActivityIndicator,
+  Clipboard,
 } from "react-native";
 import Form from "../components/Form";
 import exampleData from "../../exampleData.json";
@@ -16,7 +17,7 @@ import { fonts, colors } from "../styles/all_styles";
 import { firebase } from "../../utils/firebase";
 import Header from "../components/01_Atoms/Header";
 import FormOption from "../components/FormOption";
-import { Icon } from 'react-native-elements'
+import { Icon } from "react-native-elements";
 // import Clipboard from '@react-native-community/clipboard';
 
 const fixSectionData = (json) =>
@@ -31,13 +32,16 @@ const Entry = ({ route, navigation }) => {
   const [data, setData] = useState(null);
   const [values, setValues] = useState(null);
   const [pollId, setPollId] = useState(null);
-  const roomCode = route.params.roomCode;
-  const [copiedCode, setCopiedCode] = useState(false)
+  let roomCode;
+  if (route) {
+    roomCode = route.params.roomCode;
+  }
+  const [copiedCode, setCopiedCode] = useState(false);
 
   // for copying room code to clipboard
   const copyToClipboard = () => {
-    Clipboard.setString(roomCode)
-    setCopiedCode(true)
+    Clipboard.setString(roomCode);
+    setCopiedCode(true);
   };
 
   useEffect(() => {
@@ -90,7 +94,7 @@ const Entry = ({ route, navigation }) => {
       setSubmitError(error.message);
     });
 
-    navigation.navigate("Confirmation", { pollId, roomCode, count });
+    navigation.navigate("Results", { pollId, roomCode, count });
   };
 
   useEffect(() => {
@@ -119,10 +123,18 @@ const Entry = ({ route, navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ padding: 10 }}>
-        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 }}>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: 15,
+          }}
+        >
           <Text style={fonts.h1}>Room Code: {roomCode}</Text>
           <TouchableOpacity onPress={copyToClipboard}>
-            <Icon name='clipboard' type='material-community' />
+            <Icon name="clipboard" type="material-community" />
           </TouchableOpacity>
         </View>
 
@@ -135,27 +147,27 @@ const Entry = ({ route, navigation }) => {
       {isLoading ? (
         <ActivityIndicator />
       ) : (
-          <SectionList
-            sections={sectionData}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ width: "100%", paddingBottom: 200 }}
-            keyExtractor={(index) => `${index}`}
-            renderItem={({ section: { title } }) => (
-              <FormOption
-                criteria={data.criteria}
-                values={values}
-                setValues={setValues}
-                option={title}
-              />
-            )}
-            renderSectionHeader={({ section: { title } }) => (
-              <Header navigation={navigation} title={title} />
-            )}
-          />
-        )}
-      {
-        (copiedCode) ? <Text style={{textAlign: 'center'}}>Room Code Copied!</Text> : null
-      }
+        <SectionList
+          sections={sectionData}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ width: "100%", paddingBottom: 200 }}
+          keyExtractor={(index) => `${index}`}
+          renderItem={({ section: { title } }) => (
+            <FormOption
+              criteria={data.criteria}
+              values={values}
+              setValues={setValues}
+              option={title}
+            />
+          )}
+          renderSectionHeader={({ section: { title } }) => (
+            <Header navigation={navigation} title={title} />
+          )}
+        />
+      )}
+      {copiedCode ? (
+        <Text style={{ textAlign: "center" }}>Room Code Copied!</Text>
+      ) : null}
       {!isLoading && <Button title="Submit" onPress={() => handleSubmit()} />}
     </SafeAreaView>
   );
