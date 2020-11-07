@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import { SafeAreaView, ScrollView, Text, Button } from "react-native";
+import { SafeAreaView, ScrollView, Text, StyleSheet, View } from "react-native";
 import Form from "../components/Form";
 import * as Yup from "yup";
+import Button from '../components/01_Atoms/Button';
+import {fonts} from '../styles/all_styles';
 
 import { firebase } from "../../utils/firebase";
 import validatePollForm from "../../utils/pollValidation";
 
 import randomWords from "random-words";
+
 
 const validationSchema = Yup.object().shape({
   // id: Yup.string()
@@ -110,7 +113,7 @@ const NewPollForm = ({ navigation, route }) => {
           validationSchema={validationSchema}
           onSubmit={(values) => handleSubmit(values)}
         >
-          <Text>Prompt</Text>
+          <Text style={[fonts.h3,{marginLeft: '10px'}]}>Prompt</Text>
           <Form.Field
             name="prompt"
             leftIcon=""
@@ -118,12 +121,12 @@ const NewPollForm = ({ navigation, route }) => {
             autoCapitalize="none"
             autoFocus={true}
           />
-          <Text>Options</Text>
+          <Text style={[fonts.h3,{marginLeft: '10px'}]}>Options</Text>
           {options.map((op, index) => (
             <Form.Field
               key={`options[${index}]`}
               name={`options[${index}]`}
-              leftIcon="calendar-range"
+              leftIcon="format-list-bulleted-square"
               placeholder={
                 index < placeholders.options.length
                   ? placeholders.options[index]
@@ -132,18 +135,22 @@ const NewPollForm = ({ navigation, route }) => {
               autoCapitalize="none"
             />
           ))}
-          {options.length < 5 && (
-            <Button onPress={() => addOption()} title="Add option" />
-          )}
-          {options.length > 1 && (
-            <Button onPress={() => removeOption()} title="Remove option" />
-          )}
-          <Text>Criteria</Text>
+          <View style={styles.ButtonContainer}>
+            {options.length < 5 && (
+              <Button type="secondary" width='45%' onPress={() => addOption()} title="Add option" />
+            )}
+            {options.length > 1 && (
+              <Button type="secondary" width='45%' onPress={() => removeOption()} title="Remove option" />
+            )}
+          </View>
+
+
+          <Text style={[fonts.h3,{marginLeft: '10px'}]}>Criteria</Text>
           {criteria.map((crit, index) => (
             <Form.Field
               key={`criteria[${index}]`}
               name={`criteria[${index}]`}
-              leftIcon="calendar-range"
+              leftIcon="bullseye-arrow"
               placeholder={
                 index < placeholders.criteria.length
                   ? placeholders.criteria[index]
@@ -152,12 +159,14 @@ const NewPollForm = ({ navigation, route }) => {
               autoCapitalize="none"
             />
           ))}
-          {criteria.length < 5 && (
-            <Button onPress={() => addCriteria()} title="Add criteria" />
-          )}
-          {criteria.length > 1 && (
-            <Button onPress={() => removeCriteria()} title="Remove criteria" />
-          )}
+          <View style={styles.ButtonContainer}>
+            {criteria.length < 5 && (
+              <Button type="secondary" width='45%' onPress={() => addCriteria()} title="Add criteria" />
+            )}
+            {criteria.length > 1 && (
+              <Button type="secondary" width='45%' onPress={() => removeCriteria()} title="Remove criteria" />
+            )}
+          </View>
           {
             <Form.ErrorMessage
               error={errorMessage}
@@ -171,4 +180,12 @@ const NewPollForm = ({ navigation, route }) => {
   );
 };
 
+const styles = StyleSheet.create({
+  ButtonContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: '20px'
+  }
+});
 export default NewPollForm;

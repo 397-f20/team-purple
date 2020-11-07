@@ -11,6 +11,7 @@ export default function FormTextInput({
   handlePasswordVisibility,
   ...otherProps
 }) {
+
   return (
     <View style={[styles.container, { width }]}>
       {leftIcon && (
@@ -44,8 +45,10 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.lightGrey,
     flexDirection: 'row',
-    padding: 15,
-    marginVertical: 10
+    padding: 10,
+    marginVertical: 10,
+    boxShadow: 'none',
+    outline: 0
   },
   icon: {
     marginRight: 10
@@ -54,7 +57,8 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     fontSize: 16,
-    color: Colors.black
+    color: Colors.black,
+    outline: 0
   },
   rightIconStyles: {
     alignSelf: 'center',

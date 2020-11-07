@@ -1,19 +1,20 @@
 import React from 'react';
 import { Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useFormikContext } from 'formik';
-
+import Button from '../01_Atoms/Button';
 import Colors from './colors';
 
 export default function FormButton({ title, color = 'primary' }) {
   const { handleSubmit } = useFormikContext();
 
   return (
-    <TouchableOpacity
-      style={[styles.button, { backgroundColor: Colors[color] }]}
-      onPress={handleSubmit}
-    >
-      <Text style={styles.buttonText}>{title}</Text>
-    </TouchableOpacity>
+    // <TouchableOpacity
+    //   style={[styles.button, { backgroundColor: Colors[color] }]}
+    //   onPress={handleSubmit}
+    // >
+    //   <Text style={styles.buttonText}>{title}</Text>
+    // </TouchableOpacity>
+    <Button title={title} onPress={handleSubmit}/>
   );
 }
 

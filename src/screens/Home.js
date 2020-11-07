@@ -4,7 +4,7 @@ import {
   SafeAreaView,
   Text,
   Button,
-  TextInput,
+  View,
   Image,
 } from "react-native";
 import { fonts } from "../styles/all_styles";
@@ -26,6 +26,14 @@ const Home = ({ route, navigation }) => {
   const [roomCode, setRoomCode] = React.useState("");
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.instructions}>
+        <Text style={[fonts.p, { fontWeight: 'bold' }]}>Instructions:</Text>
+        <Text style={[fonts.p]}>
+          Enter the room code below or start a new poll!
+      </Text>
+      </View>
+
+
       <Image style={styles.logo} source={require("../../assets/logo.png")} />
 
       {/* entry for room code */}
@@ -34,7 +42,7 @@ const Home = ({ route, navigation }) => {
         setRoomCode={setRoomCode}
         navigation={navigation}
       />
-      
+
     </SafeAreaView>
   );
 };
@@ -44,7 +52,11 @@ const styles = StyleSheet.create({
     flex: 1,
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    // justifyContent: "center",
+  },
+  instructions: {
+    marginTop: '10px',
+    marginBottom: '200px'
   },
   input: {
     height: 40,

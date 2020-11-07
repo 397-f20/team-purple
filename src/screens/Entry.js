@@ -6,7 +6,6 @@ import {
   Text,
   View,
   SectionList,
-  Button,
   TouchableOpacity,
   ActivityIndicator,
   Clipboard,
@@ -18,6 +17,7 @@ import { firebase } from "../../utils/firebase";
 import Header from "../components/01_Atoms/Header";
 import FormOption from "../components/FormOption";
 import { Icon } from "react-native-elements";
+import Button from '../components/01_Atoms/Button';
 // import Clipboard from '@react-native-community/clipboard';
 
 const fixSectionData = (json) =>
