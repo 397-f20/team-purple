@@ -29,9 +29,9 @@ const FormOption = ({ criteria, values, setValues, option }) => {
           <View key={item} style={styles.field}>
             <Text style={fonts.p}>{item}</Text>
             <View style={styles.labelContainer}>
-              <View style={styles.numContainer}>
+              {/* <View style={styles.numContainer}>
                 <Text style={styles.val}>{values[option][item]}</Text>
-              </View>
+              </View> */}
               <View style={styles.field__input}>
                 <Stars
                   default={values[option][item]}
@@ -50,6 +50,9 @@ const FormOption = ({ criteria, values, setValues, option }) => {
                   }
                 />
               </View>
+              <View style={styles.numContainer}>
+                <Text style={styles.val}>{values[option][item]}</Text>
+              </View> 
             </View>
           </View>
         ))}
@@ -93,7 +96,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 5,
-    marginRight: 22,
+    marginLeft: 22,
     justifyContent: "center",
     alignItems: "center",
   },

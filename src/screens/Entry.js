@@ -150,7 +150,7 @@ const Entry = ({ route, navigation }) => {
         <SectionList
           sections={sectionData}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ width: "100%", paddingBottom: 200 }}
+          contentContainerStyle={{ width: "100%", paddingBottom: 25 }}
           keyExtractor={(index) => `${index}`}
           renderItem={({ section: { title } }) => (
             <FormOption
