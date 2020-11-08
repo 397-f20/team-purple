@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import { SafeAreaView, ScrollView, Text, StyleSheet, View } from "react-native";
 import Form from "../components/Form";
 import * as Yup from "yup";
-import Button from '../components/01_Atoms/Button';
-import {fonts} from '../styles/all_styles';
+import Button from "../components/01_Atoms/Button";
+import { fonts } from "../styles/all_styles";
 
 import { firebase } from "../../utils/firebase";
 import validatePollForm from "../../utils/pollValidation";
 
 import randomWords from "random-words";
-
 
 const validationSchema = Yup.object().shape({
   // id: Yup.string()
@@ -62,35 +61,25 @@ const NewPollForm = ({ navigation, route }) => {
     console.log(values);
     const { prompt, options, criteria } = values;
 
-    let valid = validatePollForm(options, criteria);
+    const pollEval = validatePollForm(options, criteria);
+    let valid = pollEval.message;
+    const cleanedOptions = pollEval.options;
+    const cleanedCriteria = pollEval.criteria;
+
     console.log(valid);
     setErrorMesssage(valid);
-
-    const hasRepeats = (array) => {
-      let seen = {};
-      for (let item of array) {
-        if (!seen[item]) seen[item] = true;
-        else return true;
-      }
-    };
-
-    // if (hasRepeats(options)) {
-    //   setErrorMesssage("No repeated options!");
-    //   setHasError(true);
-    //   return;
-    // }
-
-    // if (hasRepeats(criteria)) {
-    //   setErrorMesssage("No repeated criteria!");
-    //   setHasError(true);
-    //   return;
-    // }
 
     if (valid != "") return;
 
     const roomCode = randomWords();
     console.log(roomCode);
-    const newPoll = { prompt, options, criteria, roomCode, count: 0 };
+    const newPoll = {
+      prompt,
+      options: cleanedOptions,
+      criteria: cleanedCriteria,
+      roomCode,
+      count: 0,
+    };
     await firebase
       .database()
       .ref("polls")
@@ -113,7 +102,7 @@ const NewPollForm = ({ navigation, route }) => {
           validationSchema={validationSchema}
           onSubmit={(values) => handleSubmit(values)}
         >
-          <Text style={[fonts.h3,{marginLeft: '10px'}]}>Prompt</Text>
+          <Text style={[fonts.h3, { marginLeft: "10px" }]}>Prompt</Text>
           <Form.Field
             name="prompt"
             leftIcon=""
@@ -121,7 +110,7 @@ const NewPollForm = ({ navigation, route }) => {
             autoCapitalize="none"
             autoFocus={true}
           />
-          <Text style={[fonts.h3,{marginLeft: '10px'}]}>Options</Text>
+          <Text style={[fonts.h3, { marginLeft: "10px" }]}>Options</Text>
           {options.map((op, index) => (
             <Form.Field
               key={`options[${index}]`}
@@ -137,15 +126,24 @@ const NewPollForm = ({ navigation, route }) => {
           ))}
           <View style={styles.ButtonContainer}>
             {options.length < 5 && (
-              <Button type="secondary" width='45%' onPress={() => addOption()} title="Add option" />
+              <Button
+                type="secondary"
+                width="45%"
+                onPress={() => addOption()}
+                title="Add option"
+              />
             )}
             {options.length > 1 && (
-              <Button type="secondary" width='45%' onPress={() => removeOption()} title="Remove option" />
+              <Button
+                type="secondary"
+                width="45%"
+                onPress={() => removeOption()}
+                title="Remove option"
+              />
             )}
           </View>
 
-
-          <Text style={[fonts.h3,{marginLeft: '10px'}]}>Criteria</Text>
+          <Text style={[fonts.h3, { marginLeft: "10px" }]}>Criteria</Text>
           {criteria.map((crit, index) => (
             <Form.Field
               key={`criteria[${index}]`}
@@ -161,10 +159,20 @@ const NewPollForm = ({ navigation, route }) => {
           ))}
           <View style={styles.ButtonContainer}>
             {criteria.length < 5 && (
-              <Button type="secondary" width='45%' onPress={() => addCriteria()} title="Add criteria" />
+              <Button
+                type="secondary"
+                width="45%"
+                onPress={() => addCriteria()}
+                title="Add criteria"
+              />
             )}
             {criteria.length > 1 && (
-              <Button type="secondary" width='45%' onPress={() => removeCriteria()} title="Remove criteria" />
+              <Button
+                type="secondary"
+                width="45%"
+                onPress={() => removeCriteria()}
+                title="Remove criteria"
+              />
             )}
           </View>
           {
@@ -182,10 +190,10 @@ const NewPollForm = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   ButtonContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: '20px'
-  }
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: "20px",
+  },
 });
 export default NewPollForm;
