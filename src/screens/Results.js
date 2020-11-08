@@ -115,7 +115,10 @@ const Results = ({ route, navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       {win == null ? (
+        <View>
         <ActivityIndicator />
+        <Text>Pie</Text>
+        </View>
       ) : (
         <View style={styles.contentContainer}>
           <View style={styles.voteCountContainer}>
