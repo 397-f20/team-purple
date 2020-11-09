@@ -99,4 +99,4 @@ function scaleBetween(unscaledNum, minAllowed, maxAllowed, min, max) {
   );
 }
 
-export default winner;
+export {winner};

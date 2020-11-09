@@ -19,6 +19,7 @@
     "@react-navigation/stack": "^5.9.1",
     "@testing-library/react-native": "^7.1.0",
     "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.5",
     "expo": "^39.0.4",
     "expo-cli": "^3.28.5",
     "expo-status-bar": "~1.0.2",
