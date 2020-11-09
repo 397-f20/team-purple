@@ -6,19 +6,36 @@ const hasRepeats = (array) => {
   }
 };
 
+const containsAny = (str, substrings) => {
+  for (var i = 0; i != substrings.length; i++) {
+    var substring = substrings[i];
+    if (str.indexOf(substring) != -1) {
+      return true;
+    }
+  }
+  return false;
+};
+
 const validatePollForm = (options, criteria) => {
   // check for empty options
   console.log(options);
   console.log(criteria);
-  /*if (
-    !options.every((item) => item != "") ||
-    !criteria.every((item) => item != "")
-  ) {
-    return "There are empty options or criteria!";
-  }*/
 
   const cleanedOptions = options.filter((item) => item != "");
   const cleanedCriteria = criteria.filter((item) => item != "");
+
+  const specialChars = [".", "#", "$", "/", "[", "]"];
+  if (
+    !options.every((item) => !containsAny(item, specialChars)) ||
+    !criteria.every((item) => !containsAny(item, specialChars))
+  ) {
+    return {
+      message:
+        "Options and criteria cannot contain special characters: '.', '#', '$', '/', '[', ']'",
+      options: cleanedOptions,
+      criteria: cleanedCriteria,
+    };
+  }
 
   if (cleanedOptions.length < 2)
     return {
