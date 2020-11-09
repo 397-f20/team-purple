@@ -35,7 +35,7 @@ const DATA = [
   }
 ]
 
-const BundledOptions = () => {
+const BundledOptions = ({onPress}) => {
   return (
     <View style={styles.container}>
       <FlatList 
@@ -45,7 +45,7 @@ const BundledOptions = () => {
         contentContainerStyle={{paddingLeft: '10px'}}
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => 
-          <TouchableOpacity style={styles.card} onPress={()=>console.log(item.title+" pressed")}>
+          <TouchableOpacity style={styles.card} onPress={()=> onPress(item)}>
             <Text style={styles.cardTitle}>{item.title}</Text>
           </TouchableOpacity>}
       />
@@ -56,6 +56,7 @@ const BundledOptions = () => {
 const styles = StyleSheet.create({
   container: {
     marginVertical: 20,
+    justifyContent: 'center'
   },
   card: {
     backgroundColor: colors.secondaryColor,

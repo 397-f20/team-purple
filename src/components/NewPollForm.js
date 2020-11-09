@@ -4,9 +4,10 @@ import Form from "../components/Form";
 import * as Yup from "yup";
 import Button from "../components/01_Atoms/Button";
 import { fonts } from "../styles/all_styles";
-import BundledOptions from "./BundledOptions/BundledOptions";
+import BundledOptions from "./03_Organisms/BundledOptions";
 import { firebase } from "../../utils/firebase";
 import validatePollForm from "../../utils/pollValidation";
+import FormField from "./01_Atoms/FormField";
 
 import randomWords from "random-words";
 
@@ -67,6 +68,7 @@ const NewPollForm = ({ navigation, route }) => {
       roomCode,
       count: 0,
     };
+
     await firebase
       .database()
       .ref("polls")
@@ -77,16 +79,35 @@ const NewPollForm = ({ navigation, route }) => {
     navigation.navigate("Entry", { roomCode });
   }
 
+  const setBundled = (bundled) => {
+    console.log(bundled)
+    setPrompt(bundled.prompt)
+    setCriteria(bundled.criteria)
+  }
+
+  const updateOptions = (index, elem) => {
+    let temp = options
+    temp[index] = elem 
+    setOptions(temp)
+  }
+
+  const updateCriteria = (index, elem) => {
+    let temp = criteria
+    temp[index] = elem 
+    setCriteria(temp)
+  }
+
   return (
     <SafeAreaView>
       <ScrollView>
-        <BundledOptions />
+        <BundledOptions onPress={setBundled}/>
         <Form
           initialValues={{
             prompt: prompt,
             options: options,
             criteria: criteria,
           }}
+          enableReinitialize={true}
           validationSchema={validationSchema}
           onSubmit={(values) => handleSubmit(values)}
         >
@@ -97,18 +118,21 @@ const NewPollForm = ({ navigation, route }) => {
             placeholder="What movie are we watching?"
             autoCapitalize="none"
             autoFocus={true}
+
           />
           <Text style={[fonts.h3, { marginLeft: "10px" }]}>Options</Text>
           {options.map((op, index) => (
-            <Form.Field
+
+            <FormField
               key={`options[${index}]`}
-              name={`options[${index}]`}
+              value={op}
               leftIcon="format-list-bulleted-square"
               placeholder={
                 index < placeholders.options.length
                   ? placeholders.options[index]
                   : `option #${index + 1}`
               }
+              onChangeText={() => updateOptions(index, op)}
               autoCapitalize="none"
             />
           ))}
