@@ -4,27 +4,14 @@ import Form from "../components/Form";
 import * as Yup from "yup";
 import Button from "../components/01_Atoms/Button";
 import { fonts } from "../styles/all_styles";
-
+import BundledOptions from "./BundledOptions/BundledOptions";
 import { firebase } from "../../utils/firebase";
 import validatePollForm from "../../utils/pollValidation";
 
 import randomWords from "random-words";
 
 const validationSchema = Yup.object().shape({
-  // id: Yup.string()
-  //   .required()
-  //   .matches(/(F|W|S)\d{3,}/, "Must be a term and 3-digit number")
-  //   .label("ID"),
-  // meets: Yup.string()
-  //   .required()
-  //   .matches(
-  //     /(M|Tu|W|Th|F)+ +\d\d?:\d\d-\d\d?:\d\d/,
-  //     "Must be weekdays followed by start and end time"
-  //   )
-  //   .label("Meeting times"),
   prompt: Yup.string().required().label("Prompt"),
-  // options: Yup.mixed().notOneOf(["op1"]).defined(),
-  // criteria: ,
 });
 
 const placeholders = {
@@ -93,6 +80,7 @@ const NewPollForm = ({ navigation, route }) => {
   return (
     <SafeAreaView>
       <ScrollView>
+        <BundledOptions />
         <Form
           initialValues={{
             prompt: prompt,
