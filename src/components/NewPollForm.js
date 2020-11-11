@@ -4,9 +4,10 @@ import Form from "../components/Form";
 import * as Yup from "yup";
 import Button from "../components/01_Atoms/Button";
 import { fonts } from "../styles/all_styles";
-import BundledOptions from "./BundledOptions/BundledOptions";
+import BundledOptions from "./03_Organisms/BundledOptions";
 import { firebase } from "../../utils/firebase";
 import validatePollForm from "../../utils/pollValidation";
+import FormField from "./01_Atoms/FormField";
 
 import randomWords from "random-words";
 
@@ -15,8 +16,8 @@ const validationSchema = Yup.object().shape({
 });
 
 const placeholders = {
-  options: ["movie 1", "movie 2"],
-  criteria: ["vfx", "act", "sound"],
+  options: ["star wars", "lord of the rings"],
+  criteria: ["vfx", "act", "soundtrack"],
 };
 
 // FIXME: A text node cannot be a child of a <View>
@@ -27,6 +28,7 @@ const NewPollForm = ({ navigation, route }) => {
   const [criteria, setCriteria] = useState(["", "", ""]);
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMesssage] = useState("");
+  const [activeBundle, setActiveBundle] = useState(-1);
 
   const addOption = () => {
     setOptions([...options, ""]);
@@ -44,11 +46,32 @@ const NewPollForm = ({ navigation, route }) => {
     setCriteria(criteria.slice(0, criteria.length - 1));
   };
 
-  async function handleSubmit(values) {
-    console.log(values);
-    const { prompt, options, criteria } = values;
+  const setBundled = (bundled, index) => {
+    if (index == activeBundle) {
+      setActiveBundle(-1);
+      setPrompt("");
+      setCriteria(["", "", ""]);
+    } else {
+      setActiveBundle(index);
+      setPrompt(bundled.prompt);
+      setCriteria(bundled.criteria);
+    }
+  };
 
-    const pollEval = validatePollForm(options, criteria);
+  const updateOptions = (index, elem) => {
+    let temp = [...options];
+    temp[index] = elem;
+    setOptions(temp);
+  };
+
+  const updateCriteria = (index, elem) => {
+    let temp = [...criteria];
+    temp[index] = elem;
+    setCriteria(temp);
+  };
+
+  async function handleSubmit() {
+    const pollEval = validatePollForm(prompt, options, criteria);
     let valid = pollEval.message;
     const cleanedOptions = pollEval.options;
     const cleanedCriteria = pollEval.criteria;
@@ -67,6 +90,7 @@ const NewPollForm = ({ navigation, route }) => {
       roomCode,
       count: 0,
     };
+
     await firebase
       .database()
       .ref("polls")
@@ -80,97 +104,86 @@ const NewPollForm = ({ navigation, route }) => {
   return (
     <SafeAreaView>
       <ScrollView>
-        <BundledOptions />
-        <Form
-          initialValues={{
-            prompt: prompt,
-            options: options,
-            criteria: criteria,
-          }}
-          validationSchema={validationSchema}
-          onSubmit={(values) => handleSubmit(values)}
-        >
-          <Text style={[fonts.h3, { marginLeft: "10px" }]}>Prompt</Text>
-          <Form.Field
-            name="prompt"
-            leftIcon=""
-            placeholder="What movie are we watching?"
+        <BundledOptions onPress={setBundled} activeBundle={activeBundle} />
+        <Text style={[fonts.h3, { marginLeft: "10px" }]}>Prompt</Text>
+        <FormField
+          value={prompt}
+          onChangeText={(text) => setPrompt(text)}
+          leftIcon=""
+          placeholder="What movie are we watching?"
+          autoCapitalize="none"
+          autoFocus={true}
+        />
+        <Text style={[fonts.h3, { marginLeft: "10px" }]}>Options</Text>
+        {options.map((op, index) => (
+          <FormField
+            key={`options[${index}]`}
+            value={op}
+            leftIcon="format-list-bulleted-square"
+            placeholder={`option #${index + 1}`}
+            onChangeText={(text) => updateOptions(index, text)}
             autoCapitalize="none"
-            autoFocus={true}
           />
-          <Text style={[fonts.h3, { marginLeft: "10px" }]}>Options</Text>
-          {options.map((op, index) => (
-            <Form.Field
-              key={`options[${index}]`}
-              name={`options[${index}]`}
-              leftIcon="format-list-bulleted-square"
-              placeholder={
-                index < placeholders.options.length
-                  ? placeholders.options[index]
-                  : `option #${index + 1}`
-              }
-              autoCapitalize="none"
+        ))}
+        <View style={styles.ButtonContainer}>
+          {options.length < 5 && (
+            <Button
+              type="secondary"
+              width="45%"
+              onPress={() => addOption()}
+              title="Add option"
             />
-          ))}
-          <View style={styles.ButtonContainer}>
-            {options.length < 5 && (
-              <Button
-                type="secondary"
-                width="45%"
-                onPress={() => addOption()}
-                title="Add option"
-              />
-            )}
-            {options.length > 1 && (
-              <Button
-                type="secondary"
-                width="45%"
-                onPress={() => removeOption()}
-                title="Remove option"
-              />
-            )}
-          </View>
+          )}
+          {options.length > 1 && (
+            <Button
+              type="secondary"
+              width="45%"
+              onPress={() => removeOption()}
+              title="Remove option"
+            />
+          )}
+        </View>
 
-          <Text style={[fonts.h3, { marginLeft: "10px" }]}>Criteria</Text>
-          {criteria.map((crit, index) => (
-            <Form.Field
-              key={`criteria[${index}]`}
-              name={`criteria[${index}]`}
-              leftIcon="bullseye-arrow"
-              placeholder={
-                index < placeholders.criteria.length
-                  ? placeholders.criteria[index]
-                  : `criteria #${index + 1}`
-              }
-              autoCapitalize="none"
+        <Text style={[fonts.h3, { marginLeft: "10px" }]}>Criteria</Text>
+        {criteria.map((crit, index) => (
+          <FormField
+            key={`criteria[${index}]`}
+            value={crit}
+            leftIcon="bullseye-arrow"
+            placeholder={
+              index < placeholders.criteria.length
+                ? placeholders.criteria[index]
+                : `criteria #${index + 1}`
+            }
+            onChangeText={(text) => updateCriteria(index, text)}
+            autoCapitalize="none"
+          />
+        ))}
+
+        <View style={styles.ButtonContainer}>
+          {criteria.length < 5 && (
+            <Button
+              type="secondary"
+              width="45%"
+              onPress={() => addCriteria()}
+              title="Add criteria"
             />
-          ))}
-          <View style={styles.ButtonContainer}>
-            {criteria.length < 5 && (
-              <Button
-                type="secondary"
-                width="45%"
-                onPress={() => addCriteria()}
-                title="Add criteria"
-              />
-            )}
-            {criteria.length > 1 && (
-              <Button
-                type="secondary"
-                width="45%"
-                onPress={() => removeCriteria()}
-                title="Remove criteria"
-              />
-            )}
-          </View>
-          {
-            <Form.ErrorMessage
-              error={errorMessage}
-              visible={errorMessage != ""}
+          )}
+          {criteria.length > 1 && (
+            <Button
+              type="secondary"
+              width="45%"
+              onPress={() => removeCriteria()}
+              title="Remove criteria"
             />
-          }
-          <Form.Button title={"Create"} />
-        </Form>
+          )}
+        </View>
+        {errorMessage && (
+          <Text style={[{ marginLeft: "10px", color: "red" }]}>
+            {errorMessage}
+          </Text>
+        )}
+        <Button title={"Create"} onPress={() => handleSubmit()} />
       </ScrollView>
     </SafeAreaView>
   );

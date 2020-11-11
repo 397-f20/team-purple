@@ -158,6 +158,7 @@ const Entry = ({ route, navigation }) => {
               values={values}
               setValues={setValues}
               option={title}
+            
             />
           )}
           renderSectionHeader={({ section: { title } }) => (

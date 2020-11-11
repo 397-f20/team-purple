@@ -16,11 +16,13 @@ const containsAny = (str, substrings) => {
   return false;
 };
 
-const validatePollForm = (options, criteria) => {
-  // check for empty options
-  console.log(options);
-  console.log(criteria);
+const validatePollForm = (prompt, options, criteria) => {
+  if (prompt.length < 5)
+    return {
+      message: "Prompt should be longer than 5 characters",
+    };
 
+  // check for empty options
   const cleanedOptions = options.filter((item) => item != "");
   const cleanedCriteria = criteria.filter((item) => item != "");
 
