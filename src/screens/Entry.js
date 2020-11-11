@@ -6,7 +6,6 @@ import {
   Text,
   View,
   SectionList,
-  Button,
   TouchableOpacity,
   ActivityIndicator,
   Clipboard,
@@ -18,6 +17,7 @@ import { firebase } from "../../utils/firebase";
 import Header from "../components/01_Atoms/Header";
 import FormOption from "../components/FormOption";
 import { Icon } from "react-native-elements";
+import Button from '../components/01_Atoms/Button';
 // import Clipboard from '@react-native-community/clipboard';
 
 const fixSectionData = (json) =>
@@ -150,7 +150,7 @@ const Entry = ({ route, navigation }) => {
         <SectionList
           sections={sectionData}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ width: "100%", paddingBottom: 200 }}
+          contentContainerStyle={{ width: "100%", paddingBottom: 25 }}
           keyExtractor={(index) => `${index}`}
           renderItem={({ section: { title } }) => (
             <FormOption
