@@ -4,11 +4,12 @@ import renderer from 'react-test-renderer';
 import ResultSection from '../components/02_Molecules/ResultSection';
 
 const mockData = {
-  labels: ['pie', 'pizza', 'Total'],
-  datasets: [{
-    data: [0, 40, 25],
-  } ],
-} 
+  title: "option",
+  overall: 15,
+  labels: ["hi", "byee"],
+  criteriaRatings: [2, 4],
+  win: true,
+}
 
 describe('<ResultSection />', () => {
   it('has 2 children', () => {

@@ -59,7 +59,9 @@
     "testMatch": [
       "**/src/tests/**/*.[jt]s?(x)",
       "**/?(*.)+test.[jt]s?(x)"
-    ]
+    ],
+      "snapshotSerializers": ["enzyme-to-json/serializer"]
+    
   },
   "private": true
 }
