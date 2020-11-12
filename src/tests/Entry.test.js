@@ -12,7 +12,7 @@ describe("<Entry />", () => {
     expect(tree.children.length).toBe(3);
   });
 
-  let data = {
+  /*let data = {
     count: 8,
     criteria: ["Comfortability", "Package Ecosystem", "Documentation"],
     options: ["React", "Vue"],
@@ -36,5 +36,5 @@ describe("<Entry />", () => {
   const mockCallback = jest.fn((data) => data);
   handleData(data, mockCallback);
 
-  console.log(mockCallback.mock.results[0].value);
+  console.log(mockCallback.mock.results[0].value);*/
 });
