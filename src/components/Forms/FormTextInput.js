@@ -1,17 +1,16 @@
-import React from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React from "react";
+import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import Colors from './colors';
+import Colors from "./colors";
 
 export default function FormTextInput({
   leftIcon,
-  width = '100%',
+  width = "100%",
   rightIcon,
   handlePasswordVisibility,
   ...otherProps
 }) {
-
   return (
     <View style={[styles.container, { width }]}>
       {leftIcon && (
@@ -44,24 +43,21 @@ export default function FormTextInput({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.lightGrey,
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 10,
     marginVertical: 10,
-    boxShadow: 'none',
-    outline: 0
   },
   icon: {
-    marginRight: 10
+    marginRight: 10,
   },
   input: {
     flex: 1,
-    width: '100%',
+    width: "100%",
     fontSize: 16,
     color: Colors.black,
-    outline: 0
   },
   rightIconStyles: {
-    alignSelf: 'center',
-    marginLeft: 10
-  }
+    alignSelf: "center",
+    marginLeft: 10,
+  },
 });

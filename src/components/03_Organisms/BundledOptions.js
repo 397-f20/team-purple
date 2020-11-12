@@ -58,15 +58,15 @@ const BundledOptions = ({ onPress, activeBundle }) => {
 };
 
 const cardBase = {
-  width: "100px",
-  height: "50px",
+  width: 100,
+  height: 50,
   display: "flex",
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "center",
-  borderRadius: "5px",
-  marginRight: "10px",
-  padding: "5px",
+  borderRadius: 5,
+  marginRight: 10,
+  padding: 5,
 };
 
 const styles = StyleSheet.create({
