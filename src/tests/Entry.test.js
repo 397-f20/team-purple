@@ -1,10 +1,8 @@
 import React from "react";
-import renderer, { act } from "react-test-renderer";
-import { render } from "@testing-library/react-native";
-
+import renderer from "react-test-renderer";
 import Entry from "../screens/Entry";
 
-jest.mock("react-native/Libraries/Animated/src/NativeAnimatedHelper"); //removes useNativeDriver error
+
 
 describe("<Entry />", () => {
   it("has 3 child", () => {
