@@ -16,13 +16,12 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        
+        <Stack.Screen name="Home" component={Home} />
         <Stack.Screen
           name="NewPoll"
           component={NewPoll}
           options={{ title: "New Poll" }}
         />
-        <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Entry" component={Entry} />
         {/* change name to option.name or state */}
         <Stack.Screen name="Description" component={Description} />
