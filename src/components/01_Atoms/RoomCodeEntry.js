@@ -1,17 +1,21 @@
-import React from "react";
+import React, {useState} from "react";
 import {
   StyleSheet,
   SafeAreaView,
   Text,
   Button,
   TextInput,
-  View,
+  View
 } from "react-native";
 import { fonts, colors } from "../../styles/all_styles";
 import { firebase } from "../../../utils/firebase";
 
 const RoomCodeEntry = ({ roomCode, setRoomCode, navigation }) => {
   // takes you to Entry.js if room code exists, display error if not
+
+  const [errorMessage, setErrorMesssage] = useState(null);
+
+
   async function handleSubmit() {
     // check if room code exists in the db
     const db = firebase.database().ref("polls").orderByChild("roomCode");
@@ -21,7 +25,9 @@ const RoomCodeEntry = ({ roomCode, setRoomCode, navigation }) => {
         console.log("Going to room ", roomCode)
         navigation.navigate("Entry", { roomCode })
       } else {
+        setErrorMesssage("Room Code Invalid")
         console.log("Room Code Invalid")
+
       }
     });
   }
@@ -38,6 +44,11 @@ const RoomCodeEntry = ({ roomCode, setRoomCode, navigation }) => {
         onChangeText={(text) => setRoomCode(text)}
         value={roomCode}
       />
+      {errorMessage && (
+          <Text style={[{ marginTop: 10, color: "red" }]}>
+            {errorMessage}
+          </Text>
+        )}
     </View>
   );
 };
