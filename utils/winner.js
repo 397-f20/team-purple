@@ -1,5 +1,5 @@
 const winner = (pollData) => {
-  //creates an object that maps each option to a list of scores (representing each criteria)along with a total value
+  //creates an object that maps each option to an object that maps each criteria to a total score
   let sum = {};
   let critVoteCount = {}
   let data = {...pollData};
