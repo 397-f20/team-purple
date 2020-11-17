@@ -1,89 +1,74 @@
 const winner = (pollData) => {
-  //creates an object that maps options to their scores along with a total value
+  //creates an object that maps each option to a list of scores (representing each criteria)along with a total value
   let sum = {};
-  let lead = "";
-  let max = 0;
-  let data = Object.assign({}, pollData);
+  let critVoteCount = {}
+  let data = {...pollData};
   let votes = Object.values(data.scores);
-  let voteCounts = {}
-  //for each choices of each user's vote (based on db scheme)
+
+  //for each user's vote (based on db scheme)
   for (let vote of votes) {
-    for (const [choice, scores] of Object.entries(vote)) {
-      //first time accessing option? set it to that vote and create a total value
-      console.log("scores: ", scores)
-      if (!sum[choice]) {
-        sum[choice] = Object.assign({}, scores);
+    for (const [option, scores] of Object.entries(vote)) {
+      //first time accessing option? set the sum of that optiion to this individual vote and create a total value
+      if (!sum[option]) {
+        sum[option] = Object.assign({}, scores);
+        critVoteCount[option] = Object.assign({}, scores);
         const tally = Object.values(scores);
-        console.log(tally)
-        const cleanedTally = tally.filter(val =>
-          val != 0)
-        console.log("cleaned tally " + cleanedTally)
-        voteCounts[choice] = cleanedTally.length
-        sum[choice].Total = cleanedTally.reduce((a, b) => {
+        sum[option].Total = tally.reduce((a, b) => {
           return a + b;
         }, 0);
 
-        //check if we have a new winner
-        if (sum[choice].Total > max) {
-          max = sum[choice].Total;
-          lead = choice;
+        for (const [criteria, score] of Object.entries(scores)) {
+          if (score == 0){
+            critVoteCount[option][criteria] = 0
+          }
+          else {
+            critVoteCount[option][criteria] = 1
+          }
         }
+       
       }
-      //else aggregate
+      //else its not your first time accessing so just add on
       else {
         for (let criteria of data.criteria) {
-          if (!voteCounts[choice][criteria] && scores[criteria] != 0){
-            voteCounts[choice][criteria] = 1
-          }
-          else if (scores[crtieria] != 0){
-            voteCounts[choice][criteria] += 1
-          }
-          sum[choice][criteria] += scores[criteria];
-          sum[choice].Total += scores[criteria];
-        }
-
-        //check if we have a new winner
-        if (sum[choice].Total > max) {
-          max = sum[choice].Total;
-          lead = choice;
+          sum[option][criteria] += scores[criteria];
+          sum[option].Total += scores[criteria];
+          if (scores[criteria] != 0) critVoteCount[option][criteria] += 1
         }
       }
     }
   }
-  console.log(sum)
+
+  console.log(critVoteCount)
+
   //calls getResult with each option, then sort the list
-  let res = data.options.map((option) => {
-    console.log("vote counts: ", voteCounts[option])
-    return getResults(option, sum, data.criteria, voteCounts[option])
-  });
+  let res = data.options.map((option) =>
+    getResults(option, sum, data.criteria, critVoteCount)
+  );
   res.sort((a, b) => b.overall - a.overall);
 
   // account for if multiple winners / tie
   var winVoteCount = res[0].overall
-  for (var i = 0; i < res.length; i++) {
+  for (var i=0; i<res.length; i++){
     // mark it as a winner if it has the same score
-    if (res[i].overall == winVoteCount) {
+    if (res[i].overall == winVoteCount){
       res[i].win = true
     }
     // don't need to check the rest of the list if it doesnt match
-    else {
+    else{
       break
     }
   }
   return res;
 };
 
-// scale to 5 star rating and convert to UI format
-const getResults = (option, sum, criteria, voteCount) => {
-  // aggregate
+// scale to 5 star rating and return in a format to be used by UI
+const getResults = (option, sum, criteria, voteCounts) => {
+  // puts scores total in the order of the criteria array
   let scores = [];
   for (let crit of criteria) {
     scores.push(sum[option][crit]);
   }
 
-
-
-  //might be a more efficient way to do this but this adds the total to the results graph
   scores.push(sum[option].Total);
 
   // const scaledOverallRating = scaleBetween(
@@ -97,11 +82,9 @@ const getResults = (option, sum, criteria, voteCount) => {
 
   const scaledCriteriaRating = scores
     .slice(0, -1)
-    .map((item, index) => scaleBetween(item, 1, 5, 1 * voteCount[criteria[index]], 5 * voteCount[criteria[index]]));
+    .map((item, index) => scaleBetween(item, 1, 5, 1 * voteCounts[option][criteria[index]], 5 * voteCounts[option][criteria[index]]));
 
-
-  const scaledOverallRating = scaledCriteriaRating.reduce( (a, b) => a + b, 0) / scaledCriteriaRating.length
-
+    const scaledOverallRating = scaledCriteriaRating.reduce((a, b) => a + b, 0) / scaledCriteriaRating.length
 
 
   return {
@@ -114,11 +97,8 @@ const getResults = (option, sum, criteria, voteCount) => {
 };
 
 
-
-
-
 // scale to 5 star rating
-function scaleBetween(unscaledNum, minAllowed, maxAllowed, min, max) {
+const scaleBetween = (unscaledNum, minAllowed, maxAllowed, min, max) => {
   return (
     ((maxAllowed - minAllowed) * (unscaledNum - min)) / (max - min) + minAllowed
   );
