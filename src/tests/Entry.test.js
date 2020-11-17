@@ -34,4 +34,32 @@ describe("<Entry />", () => {
     const state = mockCallback.mock.results[0].value;
     expect(state.React["Comfortability"]).toBe(0);
   });
+
+  const key = "Documentation";
+  const val = 5;
+  const formOption = "React";
+  const newState = {
+    React: {
+      Comfortability: 0,
+      Documentation: 0,
+      "Package Ecosystem": 0,
+    },
+    Vue: {
+      Comfortability: 0,
+      Documentation: 0,
+      "Package Ecosystem": 0,
+    },
+  };
+  const handleNewRating = (values, key, val, callback) => {
+    const currValues = { ...values };
+    currValues[formOption][key] = val;
+    callback(currValues);
+  };
+  const mockRatingCallback = jest.fn((data) => data);
+
+  it("correctly adds a 5-star rating", () => {
+    handleNewRating(newState, key, val, mockRatingCallback);
+    const updatedState = mockRatingCallback.mock.results[0].value;
+    expect(updatedState.React["Documentation"]).toBe(5);
+  });
 });
