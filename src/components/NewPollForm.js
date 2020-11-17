@@ -24,6 +24,8 @@ const placeholders = {
 const NewPollForm = ({ navigation, route }) => {
   const [submitError, setSubmitError] = useState("");
   const [prompt, setPrompt] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const [options, setOptions] = useState(["", ""]);
   const [criteria, setCriteria] = useState(["", "", ""]);
   const [hasError, setHasError] = useState(false);
@@ -81,7 +83,26 @@ const NewPollForm = ({ navigation, route }) => {
 
     if (valid != "") return;
 
-    const roomCode = randomWords();
+    // create random room code
+    let roomCode = randomWords();
+    let roomCodeTaken = true;
+
+    // ref to db for querying room code
+    const db = firebase.database().ref("polls").orderByChild("roomCode");
+
+    // make sure we create a unique room code
+    while (roomCodeTaken) {
+      await db.equalTo(roomCode).once("value", (snapshot) => {
+        if (snapshot.exists()) {
+          const dbRoomCode = snapshot.val();
+          console.log("exists!", dbRoomCode);
+          roomCode = randomWords();
+        } else {
+          roomCodeTaken = false;
+        }
+      });
+    }
+
     console.log(roomCode);
     const newPoll = {
       prompt,
