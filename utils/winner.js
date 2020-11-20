@@ -18,12 +18,7 @@ const winner = (pollData) => {
         }, 0);
 
         for (const [criteria, score] of Object.entries(scores)) {
-          if (score == 0){
-            critVoteCount[option][criteria] = 0
-          }
-          else {
-            critVoteCount[option][criteria] = 1
-          }
+          critVoteCount[option][criteria] = (score == 0) ? 0 : 1
         }
        
       }
