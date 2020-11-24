@@ -16,8 +16,8 @@ import { fonts, colors } from "../styles/all_styles";
 import { firebase } from "../../utils/firebase";
 import Header from "../components/01_Atoms/Header";
 import FormOption from "../components/FormOption";
-import { Icon } from "react-native-elements";
-import Button from '../components/01_Atoms/Button';
+import { Icon, Input } from "react-native-elements";
+import Button from "../components/01_Atoms/Button";
 // import Clipboard from '@react-native-community/clipboard';
 
 const fixSectionData = (json) =>
@@ -32,6 +32,7 @@ const Entry = ({ route, navigation }) => {
   const [data, setData] = useState(null);
   const [values, setValues] = useState(null);
   const [pollId, setPollId] = useState(null);
+  const [userName, setUserName] = useState("");
   let roomCode;
   if (route) {
     roomCode = route.params.roomCode;
@@ -69,10 +70,13 @@ const Entry = ({ route, navigation }) => {
 
   const handleSubmit = async () => {
     setIsLoading(true);
+    const currValues = { ...values };
+    currValues["userName"] = userName;
+
     await firebase
       .database()
       .ref("polls/" + pollId + "/scores")
-      .push(values)
+      .push(currValues)
       .catch((error) => {
         setSubmitError(error.message);
       });
@@ -107,6 +111,7 @@ const Entry = ({ route, navigation }) => {
         return [key, { ...valuesObj }];
       });
       const optionsObj = Object.fromEntries(mappedOptions);
+      optionsObj["userName"] = null;
       console.log(optionsObj);
       setValues(optionsObj);
     }
@@ -158,7 +163,6 @@ const Entry = ({ route, navigation }) => {
               values={values}
               setValues={setValues}
               option={title}
-            
             />
           )}
           renderSectionHeader={({ section: { title } }) => (
@@ -169,6 +173,13 @@ const Entry = ({ route, navigation }) => {
       {copiedCode ? (
         <Text style={{ textAlign: "center" }}>Room Code Copied!</Text>
       ) : null}
+      <Input
+        placeholder="Enter name"
+        label="Your Name (Optional)"
+        value={userName}
+        onChangeText={(newText) => setUserName(newText)}
+        containerStyle={styles.nameInput}
+      />
       {!isLoading && <Button title="Submit" onPress={() => handleSubmit()} />}
     </SafeAreaView>
   );
@@ -198,6 +209,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  nameInput: {
+    width: "90%",
+    alignSelf: "center",
+    marginBottom: 20,
   },
 });
 

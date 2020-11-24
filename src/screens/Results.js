@@ -17,6 +17,7 @@ import { firebase } from "../../utils/firebase";
 import Header from "../components/01_Atoms/Header";
 import winner from "../../utils/winner";
 import Stars from "react-native-stars";
+import Modal from "react-native-modal";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Icon } from "react-native-elements";
 import ResultSection from "../components/02_Molecules/ResultSection";
@@ -27,6 +28,7 @@ const Results = ({ route, navigation }) => {
   const [win, setWin] = useState(null);
   const [copiedCode, setCopiedCode] = useState(false);
   const [voteCount, setVoteCount] = useState(route.params.count); // how many votes are in
+  const [modalVisible, setModalVisible] = useState(false);
   var roomCode = route.params.roomCode;
   let pollId;
 
@@ -112,6 +114,15 @@ const Results = ({ route, navigation }) => {
     };
   }, []);
 
+  const getSubmittedNames = () => {
+    const arrNames = [];
+    let votes = Object.values(pollData.scores);
+    for (let vote of votes) {
+      if (vote["userName"]) arrNames.push(vote["userName"]);
+    }
+    return arrNames.join(", ");
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {win == null ? (
@@ -123,29 +134,39 @@ const Results = ({ route, navigation }) => {
               <Text style={{ textAlign: "center" }}>Room Code Copied!</Text>
             ) : null}
           </View>
-          <View style={styles.voteCountContainer}>
+          <Text>{getSubmittedNames()}</Text>
+          <TouchableOpacity
+            onPress={() => setModalVisible(true)}
+            style={styles.voteCountContainer}
+          >
             <Text style={fonts.p}> Vote Count: </Text>
             <Text style={[fonts.p, styles.voteCount]}> {voteCount} </Text>
-          </View>
+          </TouchableOpacity>
           <View style={styles.promptContainer}>
             <Text style={[fonts.h2]}>Prompt</Text>
             <Text style={fonts.p}>{pollData.prompt}</Text>
           </View>
 
           <Text style={[fonts.h2, { marginBottom: 10 }]}>Winner</Text>
-          {win.map((option) => (
-            (option.win)?
-            <ResultSection data={option}/> : null))}
+          {win.map((option) =>
+            option.win ? <ResultSection data={option} /> : null
+          )}
 
           <View style={styles.divider} />
 
           <Text style={[fonts.h2, { marginBottom: 10, color: "grey" }]}>
             Other Results
           </Text>
-          {win.map((option) => (
-            (!option.win)?
-            <ResultSection headerColor={"#A9A9A9"} headerTextColor={"white"} data={option} other={true}/> : null
-          ))}
+          {win.map((option) =>
+            !option.win ? (
+              <ResultSection
+                headerColor={"#A9A9A9"}
+                headerTextColor={"white"}
+                data={option}
+                other={true}
+              />
+            ) : null
+          )}
         </View>
       )}
     </SafeAreaView>
@@ -196,6 +217,11 @@ const styles = StyleSheet.create({
   voteCount: {
     color: colors.primaryColor,
     fontWeight: "bold",
+  },
+  modalContainer: {
+    backgroundColor: "white",
+    width: "70%",
+    height: "50%",
   },
 });
 
