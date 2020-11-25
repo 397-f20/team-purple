@@ -26,6 +26,13 @@ const validatePollForm = (prompt, options, criteria) => {
   const cleanedOptions = options.filter((item) => item != "");
   const cleanedCriteria = criteria.filter((item) => item != "");
 
+  if (!options.every((item) => item != "userName")) {
+    return {
+      message:
+        "Options should not include 'userName'! Contact Nelly to complain.",
+    };
+  }
+
   const specialChars = [".", "#", "$", "/", "[", "]"];
   if (
     !options.every((item) => !containsAny(item, specialChars)) ||

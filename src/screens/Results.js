@@ -9,6 +9,7 @@ import {
   Button,
   ActivityIndicator,
   FlatList,
+  TouchableHighlight,
   TouchableOpacity,
   Clipboard,
 } from "react-native";
@@ -17,7 +18,9 @@ import { firebase } from "../../utils/firebase";
 import Header from "../components/01_Atoms/Header";
 import winner from "../../utils/winner";
 import Stars from "react-native-stars";
-import Modal from "react-native-modal";
+// import Modal from "react-native-modal";
+import Modal from "modal-react-native-web";
+
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Icon } from "react-native-elements";
 import ResultSection from "../components/02_Molecules/ResultSection";
@@ -134,14 +137,26 @@ const Results = ({ route, navigation }) => {
               <Text style={{ textAlign: "center" }}>Room Code Copied!</Text>
             ) : null}
           </View>
-          <Text>{getSubmittedNames()}</Text>
+
           <TouchableOpacity
-            onPress={() => setModalVisible(true)}
+            onPress={() => setModalVisible(!modalVisible)}
             style={styles.voteCountContainer}
           >
             <Text style={fonts.p}> Vote Count: </Text>
             <Text style={[fonts.p, styles.voteCount]}> {voteCount} </Text>
+            <Icon
+              name={modalVisible ? "minus-circle" : "plus-circle"}
+              type="material-community"
+            />
           </TouchableOpacity>
+
+          {modalVisible && (
+            <View style={styles.promptContainer}>
+              <Text style={[fonts.h2]}>Participants</Text>
+              <Text style={fonts.p}>{getSubmittedNames()}</Text>
+            </View>
+          )}
+
           <View style={styles.promptContainer}>
             <Text style={[fonts.h2]}>Prompt</Text>
             <Text style={fonts.p}>{pollData.prompt}</Text>
