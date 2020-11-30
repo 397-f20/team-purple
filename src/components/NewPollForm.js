@@ -1,15 +1,23 @@
 import React, { useState } from "react";
-import { SafeAreaView, ScrollView, Text, StyleSheet, View } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  Text,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import Form from "../components/Form";
 import * as Yup from "yup";
 import Button from "../components/01_Atoms/Button";
-import { fonts } from "../styles/all_styles";
+import { fonts, colors } from "../styles/all_styles";
 import BundledOptions from "./03_Organisms/BundledOptions";
 import { firebase } from "../../utils/firebase";
 import validatePollForm from "../../utils/pollValidation";
 import FormField from "./01_Atoms/FormField";
 
 import randomWords from "random-words";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 
 const validationSchema = Yup.object().shape({
   prompt: Yup.string().required().label("Prompt"),
@@ -40,12 +48,16 @@ const NewPollForm = ({ navigation, route }) => {
     setCriteria([...criteria, ""]);
   };
 
-  const removeOption = () => {
-    setOptions(options.slice(0, options.length - 1));
+  const removeOption = (index) => {
+    const optionCopy = [...options];
+    optionCopy.splice(index, 1);
+    setOptions(optionCopy);
   };
 
-  const removeCriteria = () => {
-    setCriteria(criteria.slice(0, criteria.length - 1));
+  const removeCriteria = (index) => {
+    const criteriaCopy = [...criteria];
+    criteriaCopy.splice(index, 1);
+    setCriteria(criteriaCopy);
   };
 
   const setBundled = (bundled, index) => {
@@ -137,67 +149,93 @@ const NewPollForm = ({ navigation, route }) => {
         />
         <Text style={[fonts.h3, { marginLeft: "10px" }]}>Options</Text>
         {options.map((op, index) => (
-          <FormField
-            key={`options[${index}]`}
-            value={op}
-            leftIcon="format-list-bulleted-square"
-            placeholder={`option #${index + 1}`}
-            onChangeText={(text) => updateOptions(index, text)}
-            autoCapitalize="none"
-          />
+          <View>
+            <FormField
+              key={`options[${index}]`}
+              value={op}
+              leftIcon="format-list-bulleted-square"
+              placeholder={`option #${index + 1}`}
+              onChangeText={(text) => updateOptions(index, text)}
+              autoCapitalize="none"
+            />
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => removeOption(index)}
+            >
+              <MaterialIcons
+                name="delete-forever"
+                size={25}
+                style={styles.cancelIcon}
+              />
+            </TouchableOpacity>
+          </View>
         ))}
         <View style={styles.ButtonContainer}>
           {options.length < 5 && (
-            <Button
-              type="secondary"
-              width="45%"
+            <TouchableOpacity
+              style={styles.addButton}
               onPress={() => addOption()}
-              title="Add option"
-            />
-          )}
-          {options.length > 1 && (
-            <Button
-              type="secondary"
-              width="45%"
-              onPress={() => removeOption()}
-              title="Remove option"
-            />
+            >
+              <Ionicons
+                name="ios-add-circle"
+                size={25}
+                style={styles.addIcon}
+              />
+              <Text style={styles.addText}>Add Option</Text>
+            </TouchableOpacity>
           )}
         </View>
 
         <Text style={[fonts.h3, { marginLeft: "10px" }]}>Criteria</Text>
         {criteria.map((crit, index) => (
-          <FormField
-            key={`criteria[${index}]`}
-            value={crit}
-            leftIcon="bullseye-arrow"
-            placeholder={
-              index < placeholders.criteria.length
-                ? placeholders.criteria[index]
-                : `criteria #${index + 1}`
-            }
-            onChangeText={(text) => updateCriteria(index, text)}
-            autoCapitalize="none"
-          />
+          <View>
+            <FormField
+              key={`criteria[${index}]`}
+              value={crit}
+              leftIcon="bullseye-arrow"
+              placeholder={
+                index < placeholders.criteria.length
+                  ? placeholders.criteria[index]
+                  : `criteria #${index + 1}`
+              }
+              onChangeText={(text) => updateCriteria(index, text)}
+              autoCapitalize="none"
+            />
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => removeCriteria(index)}
+            >
+              <MaterialIcons
+                name="delete-forever"
+                size={25}
+                style={styles.cancelIcon}
+              />
+            </TouchableOpacity>
+          </View>
         ))}
 
         <View style={styles.ButtonContainer}>
           {criteria.length < 5 && (
-            <Button
-              type="secondary"
-              width="45%"
+            <TouchableOpacity
+              style={styles.addButton}
               onPress={() => addCriteria()}
-              title="Add criteria"
-            />
+            >
+              <Ionicons
+                name="ios-add-circle"
+                size={25}
+                style={styles.addIcon}
+              />
+              <Text style={styles.addText}>Add Criteria</Text>
+            </TouchableOpacity>
           )}
-          {criteria.length > 1 && (
+          {/*criteria.length > 1 && (
             <Button
               type="secondary"
               width="45%"
               onPress={() => removeCriteria()}
               title="Remove criteria"
             />
-          )}
+          )*/}
         </View>
         {errorMessage && (
           <Text style={[{ marginLeft: "10px", color: "red" }]}>
@@ -212,10 +250,34 @@ const NewPollForm = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   ButtonContainer: {
-    display: "flex",
+    /*display: "flex",
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-around",*/
     marginBottom: "20px",
+  },
+  addButton: {
+    flexDirection: "row",
+    marginHorizontal: 10,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    paddingVertical: 8,
+  },
+  addText: {
+    fontFamily: fonts.h3,
+    color: "#696969",
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+  addIcon: {
+    color: colors.blue,
+  },
+  cancelButton: {
+    position: "absolute",
+    top: 17.5,
+    right: 10,
+  },
+  cancelIcon: {
+    color: "#696969",
   },
 });
 export default NewPollForm;
