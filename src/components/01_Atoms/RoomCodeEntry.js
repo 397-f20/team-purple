@@ -81,7 +81,11 @@ const RoomCodeEntry = ({ roomCode, setRoomCode, navigation }) => {
         onChangeText={(text) => setRoomCode(text)}
         value={roomCode}
       />
-      <Button onPress={() => handleSubmit()} title="Enter Poll"></Button>
+      <Button
+        color={colors.blue}
+        onPress={() => handleSubmit()}
+        title="Enter Poll"
+      ></Button>
       <Text
         style={[{ alignSelf: "center", marginTop: 10 }]}
         onPress={() => seeResults()}
