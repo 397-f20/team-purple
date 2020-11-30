@@ -3,10 +3,9 @@ import {
   StyleSheet,
   SafeAreaView,
   Text,
-  Button,
   View,
   Image,
-  TouchableOpacity,
+  Button,
 } from "react-native";
 import { fonts, colors } from "../styles/all_styles";
 import RoomCodeEntry from "../components/01_Atoms/RoomCodeEntry";

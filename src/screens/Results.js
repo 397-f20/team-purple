@@ -30,7 +30,7 @@ const Results = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [win, setWin] = useState(null);
   const [copiedCode, setCopiedCode] = useState(false);
-  const [voteCount, setVoteCount] = useState(route.params.count); // how many votes are in
+  const [voteCount, setVoteCount] = useState(0); // how many votes are in
   const [modalVisible, setModalVisible] = useState(false);
   var roomCode = route.params.roomCode;
   let pollId;

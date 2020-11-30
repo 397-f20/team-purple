@@ -1,11 +1,12 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   SafeAreaView,
   Text,
   Button,
   TextInput,
-  View
+  View,
+  AsyncStorage,
 } from "react-native";
 import { fonts, colors } from "../../styles/all_styles";
 import { firebase } from "../../../utils/firebase";
@@ -15,19 +16,55 @@ const RoomCodeEntry = ({ roomCode, setRoomCode, navigation }) => {
 
   const [errorMessage, setErrorMesssage] = useState(null);
 
-
   async function handleSubmit() {
     // check if room code exists in the db
     const db = firebase.database().ref("polls").orderByChild("roomCode");
     await db.equalTo(roomCode).once("value", (snapshot) => {
       // if room code exists
       if (snapshot.exists()) {
-        console.log("Going to room ", roomCode)
-        navigation.navigate("Entry", { roomCode })
+        console.log(Object.keys(snapshot.val())[0]);
+        console.log("Going to room ", roomCode);
+        navigation.navigate("Entry", { roomCode });
       } else {
-        setErrorMesssage("Room Code Invalid")
-        console.log("Room Code Invalid")
+        setErrorMesssage("Room Code Invalid");
+        console.log("Room Code Invalid");
+      }
+    });
+  }
 
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   const db = firebase
+  //     .database()
+  //     .ref("polls")
+  //     .orderByChild("roomCode")
+  //     .equalTo(roomCode);
+
+  //   const handleData = (snap) => {
+  //     if (snap.val()) {
+  //       setPollId(Object.keys(snap.val())[0]);
+  //     }
+  //     setIsLoading(false);
+  //   };
+
+  //   db.on("value", handleData, (error) => console.log(error));
+  //   return () => {
+  //     db.off("value", handleData);
+  //   };
+  // }, []);
+
+  async function seeResults() {
+    // check if room code exists in the db
+    const db = firebase.database().ref("polls").orderByChild("roomCode");
+    await db.equalTo(roomCode).once("value", (snapshot) => {
+      // if room code exists
+      if (snapshot.exists()) {
+        const pollId = Object.keys(snapshot.val())[0];
+        console.log("Going to room ", roomCode);
+        navigation.navigate("Results", { pollId, roomCode });
+      } else {
+        setErrorMesssage("Room Code Invalid");
+        console.log("Room Code Invalid");
       }
     });
   }
@@ -44,11 +81,16 @@ const RoomCodeEntry = ({ roomCode, setRoomCode, navigation }) => {
         onChangeText={(text) => setRoomCode(text)}
         value={roomCode}
       />
+      <Button onPress={() => handleSubmit()} title="Enter Poll"></Button>
+      <Text
+        style={[{ alignSelf: "center", marginTop: 10 }]}
+        onPress={() => seeResults()}
+      >
+        Already voted? Click here to see results!
+      </Text>
       {errorMessage && (
-          <Text style={[{ marginTop: 10, color: "red" }]}>
-            {errorMessage}
-          </Text>
-        )}
+        <Text style={[{ marginTop: 10, color: "red" }]}>{errorMessage}</Text>
+      )}
     </View>
   );
 };
@@ -65,6 +107,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 10,
     paddingLeft: 10,
+    marginBottom: 10,
   },
 });
 
