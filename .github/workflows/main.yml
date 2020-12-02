@@ -14,8 +14,8 @@ jobs:
       - uses: expo/expo-github-action@v5
         with:
           expo-version: 3.x
-      - run: npm install
-      - run: npm test
+      - run: yarn install
+      - run: yarn test
 
   cypress:
     name: Cypress test
