@@ -21,6 +21,6 @@ describe('<RoomCodeEntry />', () => {
     const tree = renderer.create(<RoomCodeEntry roomCode={roomCode}
       setRoomCode={setRoomCode}
       navigation={navigation}/>).toJSON();
-    expect(tree.children.length).toBe(2);
+    expect(tree.children.length).toBe(4);
   });
 }); 

@@ -5,7 +5,7 @@ import Entry from "../screens/Entry";
 describe("<Entry />", () => {
   it("has 3 child", () => {
     const tree = renderer.create(<Entry />).toJSON();
-    expect(tree.children.length).toBe(3);
+    expect(tree.children.length).toBe(4);
   });
 
   let data = {

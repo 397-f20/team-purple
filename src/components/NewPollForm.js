@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   addText: {
-    fontFamily: fonts.h3,
+    ...fonts.h3,
     color: "#696969",
     fontWeight: "bold",
     marginLeft: 10,
